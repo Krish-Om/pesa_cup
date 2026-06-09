@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap');
+
+/* Prevent horizontal scroll */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 1;
+}
+
+/* IMAGE */
+.hero-img {
+  width: 100%;
+  display: block;
+  height: auto;
+}
+
+/* TEXT OVERLAY */
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 4%;
+  transform: translateY(-50%);
+  width: 32%;
+  z-index: 10;
+}
+
+/* TITLE */
+.hero-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlight {
+  color: #ffffff;
+}
+
+.highlight-accent {
+  color: #f5c842;
+}
+
+/* SUBTITLE */
+.hero-subtitle {
+  font-family: "Barlow", sans-serif;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  font-weight: 700;
+  color: #b8cae4;
+  margin-bottom: 10px;
+}
+
+/* DESCRIPTION */
+.hero-description {
+  font-family: "Barlow", sans-serif;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  color: #d0dceb;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background: transparent;
+  color: #f5c842;
+  border: 2px solid #f5c842;
+}
+
+.btn-primary:hover {
+  background: #f5c842;
+  color: #0a1628;
+}
+
+/* SECONDARY BUTTON */
+.btn-secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+}
+
+/* TABLET */
+@media (max-width: 768px) {
+  .hero-text {
+    width: 55%;
+    left: 5%;
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+  }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .hero-text {
+    width: 80%;
+    left: 5%;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn {
+    width: fit-content;
+  }
+}
