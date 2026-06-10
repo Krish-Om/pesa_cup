@@ -1,8 +1,8 @@
 
 import { Phone, Mail, MapPin,  } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
-import "./Footer.css";
-import "./Footer.css";
+import "../css/Footer.css";
+
 
 export default function  Footer() {
   return (

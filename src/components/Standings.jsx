@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { standingsData } from "../data/standings";
-import "./Standings.css";
+import "../css/Standings.css";
 
 const StandingsTable = ({ data }) => (
   <div className="table-wrapper">

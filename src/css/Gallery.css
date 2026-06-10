@@ -1,0 +1,39 @@
+.gallery-section{
+    background: #0a1628;
+    padding: 3rem 2rem;
+}
+
+.gallery-heading{
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2rem;
+    color: #ffffff;
+    text-align: center;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.4rem 0;
+}
+
+.gallery-subheading{
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    color: #8facc8;
+    text-align: center;
+    margin: 0 0 2rem 0;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    aspect-ratio: 16 / 10;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+

@@ -1,6 +1,6 @@
 
 import { fixturesData } from '../data/fixtures';
-import './Fixtures.css';
+import '../css/Fixtures.css';
 
 export default function Fixtures() {
   const upcomingMatches = fixturesData.filter(m => m.status === 'upcoming');

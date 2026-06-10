@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./Hero.css";
+import "../css/Hero.css";
 import banner from "../assets/banner.png";
 
 export default function Hero() {

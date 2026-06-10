@@ -1,4 +1,4 @@
-import "./TopScorersList.css";
+import "../css/TopScorersList.css";
 
 const defaultScorers = [
   { rank: 1, name: "Ram Bahadur", team: "Team Alpha", goals: 8, assists: 3, avatar: "RB" },

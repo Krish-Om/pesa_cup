@@ -1,6 +1,6 @@
 
 import { Users, Activity, Target, Zap } from 'lucide-react';
-import './Statistics.css';
+import '../css/Statistics.css';
 
 export default function Statistics() {
   const stats = [

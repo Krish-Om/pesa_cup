@@ -1,5 +1,5 @@
 
-import './Sponsors.css';
+import '../css/Sponsors.css';
 
 export default function Sponsors() {
   const sponsors = [

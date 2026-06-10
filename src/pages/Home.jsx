@@ -5,6 +5,7 @@ import Statistics from '../components/Statistics';
 import Sponsors from '../components/Sponsors';
 import TopScorersList from '../components/TopScorersList';
 import Footer from '../components/Footer';
+import Gallary from '../components/Gallary';
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <StandingsSection />
       <TopScorersList/>
       <Statistics />
+      <Gallary/>
       <Sponsors />
       <Footer/>
     </div>
