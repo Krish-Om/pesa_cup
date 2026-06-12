@@ -10,65 +10,132 @@ import photo6 from "../assets/Gallary/6.jpg";
 import photoBack from "../assets/Gallary/back.jpg";
 import photoTeam from "../assets/Gallary/team.jpg";
 
-const allPhotos = [
-  { id: 1, src: photo1, caption: "Match Highlights", category: "match" },
-  { id: 2, src: photo2, caption: "Match Highlights", category: "match" },
-  { id: 3, src: photo3, caption: "Match Highlights", category: "match" },
-  { id: 4, src: photo4, caption: "Match Highlights", category: "match" },
-  { id: 5, src: photo5, caption: "Match Highlights", category: "match" },
-  { id: 6, src: photo6, caption: "Match Highlights", category: "match" },
-  { id: 7, src: photoBack, caption: "Tournament Background", category: "event" },
-  { id: 8, src: photoTeam, caption: "Team Photo", category: "team" },
+const categories = [
+    {
+    id: "match",
+    label: "Match Photos",
+    cover: photoBack,
+    discription: "Action shots from the tournament",
+
+    photos:[
+         { id: 1, src: photo1, caption: "Match Highlights" },
+      { id: 2, src: photo2, caption: "Match Highlights" },
+      { id: 3, src: photo3, caption: "Match Highlights" },
+      { id: 4, src: photo4, caption: "Match Highlights" },
+      { id: 5, src: photo5, caption: "Match Highlights" },
+      { id: 6, src: photo6, caption: "Match Highlights" },
+    ],
+},
+
+{
+    id: "team",
+    label: "Team Photos",
+    cover: photoTeam,
+    description: "Participated team photos only",
+
+    photos: [
+        {id: 8, src: photoTeam, caption: "Meet our participated Teams"},
+    ],
+},
 ];
 
-const categories = ["all", "match", "team", "event"];
+export default function Gallery(){
+    const [activeCategory, setActiveCategory] = useState(null);
+    const [lightbox, setLightbox] = useState(null);
 
-export default function Gallery() {
-  const [selected, setSelected] = useState(null);
-  const [activeCategory, setActiveCategory] = useState("all");
+    const currentPhotos = activeCategory
+    ? categories.find(c => c.id === activeCategory)?.photos || [] : [];
 
-  const filtered = activeCategory === "all"
-    ? allPhotos
-    : allPhotos.filter(p => p.category === activeCategory);
+    const lightboxIndex = currentPhotos.findIndex(p=>p.id === lightbox?.id);
+
+    const goPrev = (e) => {
+        e.stopPropagation();
+        const prev = (lightboxIndex - 1 + currentPhotos.length) % currentPhotos.length;
+    setLightbox(currentPhotos[prev]);
+    };
+
+    const goNext  = (e) => {
+    e.stopPropagation();
+    const next = (lightboxIndex + 1) % currentPhotos.length;
+    setLightbox(currentPhotos[next]);
+  };
+
+   const handleCategoryClick = (categoryId) => {
+    setActiveCategory(categoryId);
+    setTimeout(() => {
+      document.getElementById("gallery-photos")?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+  };
 
   return (
     <section className="gallery-section" id="gallery">
-      <h2 className="gallery-heading">Gallery</h2>
-      <p className="gallery-subheading">Moments from the tournament</p>
+        <h2 className="gallery-heading">Gallery</h2>
+        <p className="gallery-subheading">Moments from the tournament.</p>
 
-      {/* Filter Tabs */}
-      <div className="gallery-filters">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            className={`gallery-filter-btn ${activeCategory === cat ? "active" : ""}`}
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
-      <div className="gallery-grid">
-        {filtered.map((photo) => (
+        {/* Category card */}
+       <div className="category-grid">
+        {categories.map((cat) => (
           <div
-            className="gallery-item"
-            key={photo.id}
-            onClick={() => setSelected(photo)}
+            key={cat.id}
+            className={`category-card ${activeCategory === cat.id ? "active" : ""}`}
+            onClick={() => handleCategoryClick(cat.id)}
           >
-            <img src={photo.src} alt={photo.caption} className="gallery-img" />
-            <div className="gallery-caption">{photo.caption}</div>
+            <img src={cat.cover} alt={cat.label} className="category-cover" />
+            <div className="category-overlay">
+              <p className="category-label">{cat.label}</p>
+              <p className="category-count">{cat.photos.length} photos</p>
+            </div>
           </div>
         ))}
       </div>
+     {/* Photo Grid — shown only when a category is selected */}
+      {activeCategory && (
+        <div id="gallery-photos" className="gallery-photos-section">
+
+          {/* Header */}
+          <div className="gallery-photos-header">
+            <div>
+              <h3 className="gallery-photos-title">
+                {categories.find(c => c.id === activeCategory)?.label}
+              </h3>
+              <p className="gallery-photos-desc">
+                {categories.find(c => c.id === activeCategory)?.description}
+              </p>
+            </div>
+            <button className="gallery-back-btn" onClick={() => setActiveCategory(null)}>
+              ← Back to Gallery
+            </button>
+          </div>
+
+          {/* Photos */}
+          <div className="gallery-grid">
+            {currentPhotos.map((photo) => (
+              <div
+                className="gallery-item"
+                key={photo.id}
+                onClick={() => setLightbox(photo)}
+              >
+                <img src={photo.src} alt={photo.caption} className="gallery-img" />
+                <div className="gallery-caption">{photo.caption}</div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      )}
 
       {/* Lightbox */}
-      {selected && (
-        <div className="lightbox" onClick={() => setSelected(null)}>
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
           <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <button className="lightbox-close" onClick={() => setSelected(null)}>✕</button>
-            <img src={selected.src} alt={selected.caption} className="lightbox-img" />
-            <p className="lightbox-caption">{selected.caption}</p>
+            <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+            <button className="lightbox-nav prev" onClick={goPrev}>&#8592;</button>
+            <img src={lightbox.src} alt={lightbox.caption} className="lightbox-img" />
+            <button className="lightbox-nav next" onClick={goNext}>&#8594;</button>
+            <p className="lightbox-caption">
+              {lightbox.caption}
+              <span className="lightbox-counter"> {lightboxIndex + 1} / {currentPhotos.length}</span>
+            </p>
           </div>
         </div>
       )}
