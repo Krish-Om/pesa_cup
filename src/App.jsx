@@ -7,6 +7,10 @@ import Header from './components/Header';
 // import Sponsors from './components/Sponsors';
 // import { Contact } from 'lucide-react';
 import Home from './pages/Home';
+import StandingsSection from './components/Standings';
+import Fixtures from './components/Fixtures';
+import Gallery from './components/Gallery';
+// import Ga from './pages/GalleryPage';
 
 export default function App() {
   return (
@@ -14,6 +18,10 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="fixtures" element={<Fixtures />} />
+        <Route path= "standings" element={<StandingsSection/>}/>
+          <Route path="/gallery" element={<Gallery />} />
+  {/* <Route path="/gallery/:categoryId" element={<GalleryPages />} /> */}
       </Routes>
     </BrowserRouter>
   );

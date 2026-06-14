@@ -26,6 +26,7 @@ export default function Header() {
             <Link to="/standings" className="nav-link">STANDINGS</Link>
             <a href="#stats" className="nav-link">STATS</a>
             <a href="#gallery" className="nav-link">GALLERY</a>
+            <Link to="/gallery" className="nav-link">GALLERY</Link>
             <a href="#sponsors" className="nav-link">SPONSORS</a>
             <Link to="/contact" className="nav-link">CONTACT</Link>
           </nav>
