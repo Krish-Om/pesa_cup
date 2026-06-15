@@ -48,6 +48,16 @@ export default function GalleryPage(){
 
   const category = categories[categoryId];
 
+  if(!category){
+    return(
+      <div className="gallary-page-error">
+        <p>Category not found</p>
+        <button onClick={() => navigate("/")}>Go Back</button>
+      </div>
+    );
+  }
+const photos = categories.photos;
+const setLightboxIndex = photos.findIndex(p => p.id === lightbox?.id);
 
 }
 
