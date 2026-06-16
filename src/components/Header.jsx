@@ -22,12 +22,10 @@ export default function Header() {
 
           <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
             <Link to="/" className="nav-link">HOME</Link>
-            <a href="#fixtures" className="nav-link">FIXTURES</a>
+            <a href="/fixtures" className="nav-link">FIXTURES</a>
             <Link to="/standings" className="nav-link">STANDINGS</Link>
-            <a href="#stats" className="nav-link">STATS</a>
-            <a href="#gallery" className="nav-link">GALLERY</a>
             <Link to="/gallery" className="nav-link">GALLERY</Link>
-            <a href="#sponsors" className="nav-link">SPONSORS</a>
+            <a href="/sponsors" className="nav-link">SPONSORS</a>
             <Link to="/contact" className="nav-link">CONTACT</Link>
           </nav>
 

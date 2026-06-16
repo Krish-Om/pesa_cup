@@ -1,16 +1,12 @@
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-// import Hero from './components/Hero';
-// import StandingsSection from './components/Standings';
-// import ScorersPage from './pages/ScorersPage';
-// import Sponsors from './components/Sponsors';
-// import { Contact } from 'lucide-react';
+
 import Home from './pages/Home';
-import StandingsSection from './components/Standings';
 import Fixtures from './components/Fixtures';
+import StandingsSection from './components/Standings';
 import Gallery from './components/Gallery';
-// import Ga from './pages/GalleryPage';
+import GalleryPages from './pages/GalleryPages';
+import Contact from './pages/Contact';
 
 export default function App() {
   return (
@@ -18,10 +14,11 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="fixtures" element={<Fixtures />} />
-        <Route path= "standings" element={<StandingsSection/>}/>
-          <Route path="/gallery" element={<Gallery />} />
-  {/* <Route path="/gallery/:categoryId" element={<GalleryPages />} /> */}
+        <Route path="/fixtures" element={<Fixtures />} />
+        <Route path="/standings" element={<StandingsSection />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/gallery/:categoryId" element={<GalleryPages />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </BrowserRouter>
   );
