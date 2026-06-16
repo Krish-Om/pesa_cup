@@ -1,7 +1,7 @@
 import { database } from "../config/database";
 
 export function initializeSchema(): void {
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS fixtures (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       teamA TEXT NOT NULL,
@@ -15,9 +15,9 @@ export function initializeSchema(): void {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `).run();
 
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS scorers (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -28,9 +28,9 @@ export function initializeSchema(): void {
       avatar TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `).run();
 
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS standings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       team TEXT NOT NULL,
@@ -46,9 +46,9 @@ export function initializeSchema(): void {
       position INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `).run();
 
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS gallery_categories (
       id TEXT PRIMARY KEY,
       label TEXT NOT NULL,
@@ -57,9 +57,9 @@ export function initializeSchema(): void {
       photo_count INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `).run();
 
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS gallery_photos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       category_id TEXT NOT NULL,
@@ -69,9 +69,9 @@ export function initializeSchema(): void {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY(category_id) REFERENCES gallery_categories(id)
     )
-  `);
+  `).run();
 
-  database.exec(`
+  database.query(`
     CREATE TABLE IF NOT EXISTS contact_messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -81,7 +81,7 @@ export function initializeSchema(): void {
       status TEXT DEFAULT 'new' CHECK(status IN ('new', 'read', 'replied')),
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  `).run();
 
   console.log("✓ Database schema initialized");
 }
