@@ -5,7 +5,7 @@ import Statistics from '../components/Statistics';
 import Sponsors from '../components/Sponsors';
 import TopScorersList from '../components/TopScorersList';
 import Footer from '../components/Footer';
-import Gallary from '../components/Gallery';
+import Gallery from '../components/Gallery';
 
 export default function Home() {
   return (
@@ -13,11 +13,11 @@ export default function Home() {
       <Hero />
       <Fixtures />
       <StandingsSection />
-      <TopScorersList/>
+      <TopScorersList />
       <Statistics />
-      <Gallary/>
+      <Gallery/>
       <Sponsors />
-      <Footer/>
+      <Footer />
     </div>
   );
 }
