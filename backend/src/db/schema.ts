@@ -34,7 +34,7 @@ export function initializeSchema(): void {
     CREATE TABLE IF NOT EXISTS standings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       team TEXT NOT NULL,
-      "group" TEXT NOT NULL,
+      group TEXT NOT NULL,
       played INTEGER NOT NULL DEFAULT 0,
       won INTEGER NOT NULL DEFAULT 0,
       draw INTEGER NOT NULL DEFAULT 0,
