@@ -313,8 +313,178 @@ export async function seedStandings(): Promise<void> {
   console.log("✓ Standings seeded successfully");
 }
 
+export async function seedGalleryCategories(): Promise<void> {
+  const categoriesData = [
+    {
+      id: "tournament-moments",
+      label: "Tournament Moments",
+      description: "Highlights and memorable moments from the tournament",
+      cover_image: "/gallery/tournament-moments-cover.jpg",
+      photo_count: 0,
+    },
+    {
+      id: "team-photos",
+      label: "Team Photos",
+      description: "Team pictures and group photos",
+      cover_image: "/gallery/team-photos-cover.jpg",
+      photo_count: 0,
+    },
+    {
+      id: "match-action",
+      label: "Match Action",
+      description: "In-game action shots and plays",
+      cover_image: "/gallery/match-action-cover.jpg",
+      photo_count: 0,
+    },
+    {
+      id: "awards-ceremony",
+      label: "Awards Ceremony",
+      description: "Prize distribution and awards event",
+      cover_image: "/gallery/awards-ceremony-cover.jpg",
+      photo_count: 0,
+    },
+  ];
+
+  const existing = await dbSession.query("SELECT COUNT(*) as count FROM gallery_categories");
+  if (existing.length > 0 && (existing[0] as any).count > 0) {
+    console.log("✓ Gallery categories already seeded");
+    return;
+  }
+
+  for (const category of categoriesData) {
+    await dbSession.execute(
+      `INSERT INTO gallery_categories (id, label, description, cover_image, photo_count)
+       VALUES (?, ?, ?, ?, ?)`,
+      [category.id, category.label, category.description, category.cover_image, category.photo_count]
+    );
+  }
+
+  console.log("✓ Gallery categories seeded successfully");
+}
+
+export async function seedGalleryPhotos(): Promise<void> {
+  const photosData = [
+    {
+      category_id: "tournament-moments",
+      caption: "Opening ceremony parade",
+      image_path: "/gallery/photos/tournament-moments-1.jpg",
+      sort_order: 1,
+    },
+    {
+      category_id: "tournament-moments",
+      caption: "Crowd celebration",
+      image_path: "/gallery/photos/tournament-moments-2.jpg",
+      sort_order: 2,
+    },
+    {
+      category_id: "team-photos",
+      caption: "Rising Stars team",
+      image_path: "/gallery/photos/team-photos-1.jpg",
+      sort_order: 1,
+    },
+    {
+      category_id: "team-photos",
+      caption: "Phoenix SC squad",
+      image_path: "/gallery/photos/team-photos-2.jpg",
+      sort_order: 2,
+    },
+    {
+      category_id: "match-action",
+      caption: "Goal celebration",
+      image_path: "/gallery/photos/match-action-1.jpg",
+      sort_order: 1,
+    },
+    {
+      category_id: "match-action",
+      caption: "Defensive play",
+      image_path: "/gallery/photos/match-action-2.jpg",
+      sort_order: 2,
+    },
+    {
+      category_id: "awards-ceremony",
+      caption: "Trophy presentation",
+      image_path: "/gallery/photos/awards-ceremony-1.jpg",
+      sort_order: 1,
+    },
+    {
+      category_id: "awards-ceremony",
+      caption: "Winners group photo",
+      image_path: "/gallery/photos/awards-ceremony-2.jpg",
+      sort_order: 2,
+    },
+  ];
+
+  const existing = await dbSession.query("SELECT COUNT(*) as count FROM gallery_photos");
+  if (existing.length > 0 && (existing[0] as any).count > 0) {
+    console.log("✓ Gallery photos already seeded");
+    return;
+  }
+
+  for (const photo of photosData) {
+    await dbSession.execute(
+      `INSERT INTO gallery_photos (category_id, caption, image_path, sort_order)
+       VALUES (?, ?, ?, ?)`,
+      [photo.category_id, photo.caption, photo.image_path, photo.sort_order]
+    );
+  }
+
+  console.log("✓ Gallery photos seeded successfully");
+}
+
+export async function seedContactMessages(): Promise<void> {
+  const messagesData = [
+    {
+      name: "John Doe",
+      email: "john@example.com",
+      subject: "Tournament Inquiry",
+      message: "I would like to register my team for the next tournament.",
+      status: "new",
+    },
+    {
+      name: "Jane Smith",
+      email: "jane@example.com",
+      subject: "Sponsorship Opportunity",
+      message: "We are interested in sponsoring the tournament.",
+      status: "read",
+    },
+    {
+      name: "Ram Sharma",
+      email: "ram@example.com",
+      subject: "Ticket Inquiry",
+      message: "How can I purchase tickets for the final match?",
+      status: "replied",
+    },
+    {
+      name: "Priya Patel",
+      email: "priya@example.com",
+      subject: "Media Coverage",
+      message: "Can you provide media access for tournament coverage?",
+      status: "new",
+    },
+  ];
+
+  const existing = await dbSession.query("SELECT COUNT(*) as count FROM contact_messages");
+  if (existing.length > 0 && (existing[0] as any).count > 0) {
+    console.log("✓ Contact messages already seeded");
+    return;
+  }
+
+  for (const message of messagesData) {
+    await dbSession.execute(
+      `INSERT INTO contact_messages (name, email, subject, message, status)
+       VALUES (?, ?, ?, ?, ?)`,
+      [message.name, message.email, message.subject, message.message, message.status]
+    );
+  }
+
+  console.log("✓ Contact messages seeded successfully");
+}
+
 export async function seedAll(): Promise<void> {
   await seedFixtures();
   await seedScorers();
   await seedStandings();
+  await seedGalleryCategories();
+  await seedGalleryPhotos();
+  await seedContactMessages();
 }
