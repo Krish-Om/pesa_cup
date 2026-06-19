@@ -1,6 +1,8 @@
 import fixtures from "./modules/fixtures/fixtures.routes";
 import standings from "./modules/standings/standings.routes";
 import scorers from "./modules/scorers/scorers.routes";
+import gallery from "./modules/gallery/gallery.routes";
+import contacts from "./modules/contact/contacts.routes";
 
 import express from "express";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler";
@@ -42,6 +44,8 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/fixtures", fixtures);
 app.use("/api/v1/standings",standings);
 app.use("/api/v1/scorers",scorers);
+app.use("/api/v1/gallery",gallery);
+app.use("/api/v1/contacts",contacts);
 
 // Error handling
 app.use(notFoundHandler);
