@@ -3,6 +3,8 @@ import standings from "./modules/standings/standings.routes";
 import scorers from "./modules/scorers/scorers.routes";
 import gallery from "./modules/gallery/gallery.routes";
 import contacts from "./modules/contact/contacts.routes";
+import tournament from "./modules/tournament/tournament.routes";
+
 
 import express from "express";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler";
@@ -46,6 +48,7 @@ app.use("/api/v1/standings",standings);
 app.use("/api/v1/scorers",scorers);
 app.use("/api/v1/gallery",gallery);
 app.use("/api/v1/contacts",contacts);
+app.use("/api/v1/tournament",tournament);
 
 // Error handling
 app.use(notFoundHandler);
