@@ -39,6 +39,7 @@ app.get("/api/v1/health", (req, res) => {
 // Routes
 app.use("/api/v1/fixtures", fixtures);
 app.use("/api/v1/standings",standings)
+app.use("")
 
 // Error handling
 app.use(notFoundHandler);
