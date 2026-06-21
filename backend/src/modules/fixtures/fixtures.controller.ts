@@ -18,7 +18,7 @@ const fixtureController = {
       res.status(404).json({ error: `Fixture with id ${fixtureId} not found` });
       return;
     }
-    res.json(result);
+      res.json(result);
   },
 
   updateFixture: async (req: Request, res: Response): Promise<void> => {

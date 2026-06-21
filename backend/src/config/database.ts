@@ -1,6 +1,14 @@
 import { Database } from "bun:sqlite";
 
-const databasePath = process.env.DATABASE_FILE ?? "./pesa_cup.sqlite";
+let databasePath;
+
+if (process.env.NODE_ENV === "development" ) {
+    databasePath = "./pesa_cup_dev.sqlite";
+    console.log(`Using database file: ${databasePath}`);
+}else{
+    databasePath = process.env.DATABASE_PATH || "./pesa_cup_prod.sqlite";
+    console.log(`Using database file: ${databasePath}`);
+}
 
 const database = new Database(databasePath, {
     create: true,
