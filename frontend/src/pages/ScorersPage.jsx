@@ -1,6 +1,5 @@
 
 import TopScorersList from "../components/TopScorersList";
-import scorers from "../data/scorers";
 
 export default function ScorersPage() {
   return (
@@ -17,7 +16,7 @@ export default function ScorersPage() {
           <p className="section-sub">
             Rankings based on goals scored. Assists used as tiebreaker.
           </p>
-          <TopScorersList scorers={scorers} />
+          <TopScorersList />
         </div>
       </section>
     </>

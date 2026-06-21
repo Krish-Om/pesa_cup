@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { standingsData } from "../data/standings";
+import { useEffect, useMemo, useState } from "react";
+import { StandingsAPI } from "../data/apis/api.standings";
 import "../css/Standings.css";
 
 const StandingsTable = ({ data }) => (
@@ -22,7 +22,7 @@ const StandingsTable = ({ data }) => (
 
       <tbody>
         {data.map((team) => (
-          <tr key={team.position}>
+          <tr key={team.id ?? team.position ?? team.team}>
             <td className="col-pos">
               <div className="position-badge">
                 {team.position}
@@ -63,30 +63,66 @@ const StandingsTable = ({ data }) => (
 );
 
 export default function StandingsSection() {
-  const [activeGroup, setActiveGroup] = useState("groupA");
+  const [standings, setStandings] = useState([]);
+  const [activeGroup, setActiveGroup] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const groups = [
-    {
-      id: "groupA",
-      label: "GROUP A",
-      data: standingsData.groupA,
-    },
-    {
-      id: "groupB",
-      label: "GROUP B",
-      data: standingsData.groupB,
-    },
-    {
-      id: "groupC",
-      label: "GROUP C",
-      data: standingsData.groupC,
-    },
-    {
-      id: "groupD",
-      label: "GROUP D",
-      data: standingsData.groupD,
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadStandings = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const data = await StandingsAPI.getAllStandings();
+        if (isMounted) {
+          setStandings(Array.isArray(data) ? data : []);
+        }
+      } catch (fetchError) {
+        if (isMounted) {
+          setError("Unable to load standings from the backend.");
+          setStandings([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadStandings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const groups = useMemo(() => {
+    const groupedStandings = standings.reduce((accumulator, standing) => {
+      const groupId = standing.group || "groupA";
+      if (!accumulator[groupId]) {
+        accumulator[groupId] = [];
+      }
+      accumulator[groupId].push(standing);
+      return accumulator;
+    }, {});
+
+    return Object.entries(groupedStandings)
+      .map(([id, data]) => ({
+        id,
+        label: id.replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase(),
+        data: [...data].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)),
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [standings]);
+
+  useEffect(() => {
+    if (groups.length > 0 && !groups.some((group) => group.id === activeGroup)) {
+      setActiveGroup(groups[0].id);
+    }
+  }, [groups, activeGroup]);
 
   const currentGroup =
     groups.find((g) => g.id === activeGroup) || groups[0];
@@ -96,26 +132,37 @@ export default function StandingsSection() {
       <div className="container">
         <h2 className="section-title">Standings</h2>
 
-        <div className="group-tabs">
-          {groups.map((group) => (
-            <button
-              key={group.id}
-              className={`group-tab ${
-                activeGroup === group.id ? "active" : ""
-              }`}
-              onClick={() => setActiveGroup(group.id)}
-            >
-              {group.label}
-            </button>
-          ))}
-        </div>
+        {loading ? <p>Loading standings from the backend...</p> : null}
+        {!loading && error ? <p>{error}</p> : null}
+
+        {!loading && groups.length > 0 ? (
+          <div className="group-tabs">
+            {groups.map((group) => (
+              <button
+                key={group.id}
+                className={`group-tab ${
+                  activeGroup === group.id ? "active" : ""
+                }`}
+                onClick={() => setActiveGroup(group.id)}
+              >
+                {group.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
 
         <div className="standings-container">
-          <h3 className="group-title">
-            {currentGroup.label}
-          </h3>
+          {!loading && currentGroup ? (
+            <>
+              <h3 className="group-title">
+                {currentGroup.label}
+              </h3>
 
-          <StandingsTable data={currentGroup.data} />
+              <StandingsTable data={currentGroup.data} />
+            </>
+          ) : !loading ? (
+            <p>No standings available.</p>
+          ) : null}
         </div>
       </div>
     </section>

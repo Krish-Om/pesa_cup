@@ -1,6 +1,8 @@
 
 import { Users, Activity, Target, Zap } from 'lucide-react';
 import '../css/Statistics.css';
+import { useEffect, useMemo, useState } from "react";
+import { tournamentAPI } from "../data/apis/api.statistics";
 
 export default function Statistics() {
   const stats = [
