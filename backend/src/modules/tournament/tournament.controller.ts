@@ -1,4 +1,28 @@
 import { type Request,type Response } from "express";
+import dbSession from "../../config/database.ts";
+
+//Tournament Repository
+const tournamentRepository ={
+  getTotalTeams: async (): Promise<number> => {
+    const result = await dbSession.query<{ total: number }>("SELECT COUNT(*) AS total FROM teams");
+    return result[0]?.total ?? 0;
+  },
+  getTotalMatches: async (): Promise<number> => {
+    const result = await dbSession.query<{ total: number }>("SELECT COUNT(*) AS total FROM matches");
+    return result[0]?.total ?? 0;
+  },
+  getTotalGoals: async (): Promise<number> => {
+    const result = await dbSession.query<{ total: number }>("SELECT SUM(goals) AS total FROM matches");
+    return result[0]?.total ?? 0;
+  },
+  getTopScorer: async (): Promise<{ name: string; goals: number } | null> => {
+    const result = await dbSession.query<{ name: string; goals: number }>(
+      "SELECT players.name, SUM(goals) AS goals FROM players JOIN matches ON players.id = matches.scorer_id GROUP BY players.id ORDER BY goals DESC LIMIT 1"
+    );
+    return result[0] ?? null;
+  },
+}
+
 // - Tournament: name, season, venue, organizer, summary stats
 const tournamentController = {
   getTournamentMetadata: async (req: Request, res: Response) => {
@@ -19,6 +43,13 @@ const tournamentController = {
           },
         },
       };
+      // constructing the response object with tournament metadata and summary stats
+      tournamentData.summaryStats = {
+        totalTeams: await tournamentRepository.getTotalTeams(),
+        totalMatches: await tournamentRepository.getTotalMatches(),
+        totalGoals: await tournamentRepository.getTotalGoals(),
+        topScorer: await tournamentRepository.getTopScorer() ?? { name: "N/A", goals: 0 },
+      }
       res.status(200).json(tournamentData);
     } catch (error) {
       req.log.error({ error }, "Error fetching tournament metadata:");
