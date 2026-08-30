@@ -1,7 +1,6 @@
 import app from "./app";
-import { initializeSchema } from "./db/schema";
 import { seedAll } from "./db/seed";
-import dbSession from "./config/database";
+import {dbSession} from "./config/database";
 
 
 const PORT = process.env.PORT || 3000;
