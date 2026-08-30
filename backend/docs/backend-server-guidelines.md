@@ -250,3 +250,68 @@ The backend is ready when:
 - Contact submissions are validated and saved.
 - The frontend can consume the backend without hardcoded data files.
 - The project has tests and a documented startup path.
+
+
+## Designing SSE for live score updates
+Here are the critical missing pieces, edge cases, and operational risks you need to consider before tournament day.
+
+---
+
+### 1. Network & Infrastructure Risks (The Laptop Factor)
+
+* **Wi-Fi Congestion & IP Changes:** When 100+ spectators enter the gym, local Wi-Fi will get crowded.
+* *Fix:* Plug your laptop server directly into the router via **Ethernet**. Assign your laptop a **Static IP** in the router settings so the server IP never changes mid-tournament.
+
+
+* **Nginx Timeout Settings:** By default, web servers like Nginx or Apache drop long-lived connections (like SSE) after 60 seconds of inactivity.
+* *Fix:* If using Nginx as a reverse proxy, explicitly disable proxy buffering and extend read timeouts for your SSE endpoint:
+```nginx
+location /api/live-match {
+    proxy_pass http://localhost:3000;
+    proxy_set_header Connection '';
+    proxy_http_version 1.1;
+    proxy_buffering off;
+    proxy_read_timeout 24h;
+}
+
+```
+
+* **Power & OS Sleep Settings:** An active laptop will enter sleep mode on lid close or after inactivity, which kills all spectator streams.
+* *Fix:* Disable lid-close sleep and automatic suspend entirely in your OS power management settings.
+
+---
+
+### 2. Admin Security & Race Conditions
+
+* **Admin Route Protection:** Spectators can open browser DevTools, find your `POST /api/admin/update-score` route, and manually post fake scores.
+* *Fix:* Require strong JWT/Session authentication or a secret header key on all admin routes.
+
+
+* **Double-Tap / Accidental Goal Submissions:** In fast-paced futsal, an admin might tap "Goal" twice by mistake or spam the button on a slow Wi-Fi link.
+* *Fix:*
+* Add client-side button debouncing (disable the button for 1–2 seconds after a click).
+* Maintain an **Audit Log / Undo Feature** in the admin UI to quickly revert accidental score increases or fouls.
+
+
+
+
+
+---
+
+### 3. Edge Cases & Reliability
+
+* **Memory Leak Prevention:** If spectator clients disconnect improperly (e.g., closing the mobile browser or entering a dead zone), dead connections can accumulate in your server array.
+* *Fix:* Clean up disconnected streams immediately inside the `req.on('close')` event and send a periodic keep-alive ping (e.g., a dummy comment `: ping\n\n` every 15 seconds) so your server frees up memory.
+
+
+* **State Synchronization on Reconnect:** When a spectator's phone wakes up from lock screen or reconnects to Wi-Fi, they might miss events sent while disconnected.
+* *Fix:* Always send the **full current match snapshot** (current score, timer, fouls, period) immediately when a client opens or reconnects the SSE stream—do not just send delta events (e.g., "+1 goal").
+
+
+
+---
+
+### 4. Scalability & Fallback Plan
+
+* **The "Zero-Connection" Fallback:** If local Wi-Fi fails completely or your laptop crashes mid-tournament, what happens?
+* *Fix:* Ensure your spectator frontend gracefully falls back to a manual "Refresh" button or a standard REST fetch (`GET /api/match-status`) if the SSE stream loses connection permanently.
