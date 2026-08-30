@@ -107,3 +107,9 @@ bun run build    # Bundle to ./dist
 docker build -t pesa-cup-backend .
 docker run -p 3000:3000 --env-file .env pesa-cup-backend
 ```
+
+## TODOS
+[] Add a SSE feature for live score updates please refer to this docs [Backend Server Guidleins](./docs/backend-server-guidelines.md)
+[] Add a image storage
+[] Add a admin panel, to update the live scores by person at the premise of event.
+[] do we need a load balancer ?
