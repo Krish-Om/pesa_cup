@@ -3,7 +3,7 @@ import { Database } from "bun:sqlite";
 let databasePath;
 
 if (process.env.NODE_ENV === "development" ) {
-    databasePath = "./pesa_cup_dev.sqlite";
+    databasePath = "../data/pesa_cup_dev.sqlite";
     console.log(`Using database file: ${databasePath}`);
 }else{
     databasePath = process.env.DATABASE_PATH || "./pesa_cup_prod.sqlite";
