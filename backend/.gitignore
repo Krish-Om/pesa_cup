@@ -1,7 +1,7 @@
-# dependencies (bun install)
+# dependencies
 node_modules
 
-# output
+# build & output
 out
 dist
 *.tgz
@@ -12,8 +12,8 @@ coverage
 
 # logs
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # dotenv environment variable files
 .env
@@ -21,17 +21,32 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env.test.local
 .env.production.local
 .env.local
+!.env.example
 
 # caches
 .eslintcache
 .cache
 *.tsbuildinfo
 
-# IntelliJ based IDEs
+# editor / IDE
 .idea
+.vscode/
+*.swp
+*.swo
 
-# Finder (MacOS) folder config
+# OS metadata
 .DS_Store
+Thumbs.db
 
-# SQlite db
+# SQLite databases & temp files
+data/
 *.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Drizzle Kit meta (keep SQL migrations, ignore kit state if using push)
+# Note: Un-comment .drizzle if you only use 'drizzle-kit push' and don't track migrations in Git
+# .drizzle/
