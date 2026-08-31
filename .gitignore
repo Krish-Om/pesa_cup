@@ -1,3 +1,56 @@
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# dependencies
+node_modules
+
+# build & output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+!.env.example
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# editor / IDE
+.idea
+.vscode/
+*.swp
+*.swo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# SQLite databases & temp files
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Drizzle Kit meta (keep SQL migrations, ignore kit state if using push)
+# Note: Un-comment .drizzle if you only use 'drizzle-kit push' and don't track migrations in Git
+# .drizzle/

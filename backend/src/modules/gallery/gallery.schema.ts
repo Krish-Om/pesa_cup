@@ -3,20 +3,57 @@
 // - ContactMessage: name, email, subject, message, createdAt, status
 
 import { z } from "zod";
+import {sqliteTable,text,integer} from "drizzle-orm/sqlite-core";
+import {relations,sql} from  "drizzle-orm";
+import {createInsertSchema,createSelectSchema} from "drizzle-zod";
 
-export const GalleryCategorySchema = z.object({
-  id: z.string(),
-  label: z.string(),
+// 1. Drizzle Tables
+
+export const galleryCategories = sqliteTable('gallery_categories',{
+  id: text('id').primaryKey(),
+  label: text('label').notNull(),
+  description: text('description'),
+  coverImage: text('cover_image'),
+  photoCount: integer('photo_count').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+})
+
+export const galleryPhotos = sqliteTable('gallery_photos',{
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  categoryId: text('category_id').notNull()
+  .references(() => galleryCategories.id,{onDelete: 'cascade',onUpdate: 'cascade'}),
+  caption: text('caption'),
+  imagePath: text('image_path').notNull(),
+  sortOrder: integer('sort_order'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+})  
+
+
+//2. Drizzle Relations
+
+export const insertGalleryCategorySchema = createInsertSchema(galleryCategories,{
+  id: z.string().min(1,'Category ID is required'),
+  label: z.string().min(1,'Category label is required'),
   description: z.string().optional(),
   coverImage: z.string().optional(),
-  photoCount: z.number().default(0),
-});
+  photoCount: z.number().int().nonnegative().default(0),
+})
 
-export const GalleryPhotoSchema = z.object({
-  id: z.string(),
-  categoryId: z.string(),
+export const selectGalleryCategorySchema = createSelectSchema(galleryCategories);
+
+export const insertGalleryPhotoSchema = createInsertSchema(galleryPhotos,{
+  categoryId: z.string().min(1,'Category ID is required'),
   caption: z.string().optional(),
-  imagePath: z.string(),
-  sortOrder: z.number().default(0),
-});
+  imagePath: z.string().min(1,'Image path is required'),
+  sortOrder: z.number().int().optional(),
+})
 
+export const selectGalleryPhotoSchema = createSelectSchema(galleryPhotos);
+
+// 4. Typescript Types
+
+export type GalleryCategory = z.infer<typeof selectGalleryCategorySchema>;
+export type InsertGalleryCategoryPayload = z.infer<typeof insertGalleryCategorySchema>;
+
+export type GalleryPhoto = z.infer<typeof selectGalleryPhotoSchema>;
+export type InsertGalleryPhotoPayload = z.infer<typeof insertGalleryPhotoSchema>;

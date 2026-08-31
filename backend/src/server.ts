@@ -1,7 +1,6 @@
 import app from "./app";
-import { initializeSchema } from "./db/schema";
-import { seedAll } from "./db/seed";
-import dbSession from "./config/database";
+// import { seedAll } from "./db/seed";
+import {dbSession} from "./config/database";
 
 
 const PORT = process.env.PORT || 3000;
@@ -10,11 +9,11 @@ async function startServer() {
   try {
     // Initialize database schema
     console.log("Initializing database schema...");
-    initializeSchema();
+    // initializeSchema();
 
     // Seed data
     console.log("Seeding database...");
-    await seedAll();
+    // await seedAll();
 
     // Start server
     app.listen(PORT, () => {
@@ -24,7 +23,7 @@ async function startServer() {
     });
   } catch (error) {
     console.error("Failed to start server:", error);
-    dbSession.close();
+    // dbSession.close();
     process.exit(1);
   }
 }
@@ -32,7 +31,7 @@ async function startServer() {
 // Handle graceful shutdown
 process.on("SIGINT", () => {
   console.log("\n✓ Shutting down gracefully...");
-  dbSession.close();
+  // dbSession.close();
   process.exit(0);
 });
 

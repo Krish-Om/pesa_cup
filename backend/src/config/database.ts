@@ -1,49 +1,35 @@
 import { Database } from "bun:sqlite";
+import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
+import * as schema from "../db/schema.ts";
+import { resolve, dirname } from "path";
+import { mkdirSync } from "fs";
 
-let databasePath;
+let databasePath: string;
 
-if (process.env.NODE_ENV === "development" ) {
-    databasePath = "./pesa_cup_dev.sqlite";
-    console.log(`Using database file: ${databasePath}`);
-}else{
-    databasePath = process.env.DATABASE_PATH || "./pesa_cup_prod.sqlite";
-    console.log(`Using database file: ${databasePath}`);
+if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
+  // Resolves to pesa_cup/data/pesa_cup_futsal_dev.db
+  databasePath = resolve(import.meta.dir, "../../../data/pesa_cup_futsal_dev.db");
+} else {
+  // Resolves to pesa_cup/data/pesa_cup_futsal_prod.db
+  databasePath = process.env.DATABASE_PATH
+    ? resolve(process.cwd(), process.env.DATABASE_PATH)
+    : resolve(import.meta.dir, "../../../data/pesa_cup_futsal_prod.db");
 }
+// Ensure the root data directory exists before opening SQLite
+mkdirSync(dirname(databasePath), { recursive: true });
 
-const database = new Database(databasePath, {
-    create: true,
-});
+console.log(`Using database file: ${databasePath}`);
 
-export type DbQueryParams = readonly any[];
+const client = new Database(databasePath);
 
-export interface DbSession {
-    query<T = Record<string, unknown>>(
-        queryString: string,
-        params?: DbQueryParams
-    ): Promise<T[]>;
-    execute(queryString: string, params?: DbQueryParams): Promise<number>;
-    transaction<T>(handler: () => T): T;
-    close(): void;
-}
+// 2. Enable Write-Ahead Logging (WAL) for concurrent read/write performance
+client.run("PRAGMA journal_mode=WAL;");
 
-const dbSession: DbSession = {
-    async query<T = Record<string, unknown>>(
-        queryString: string,
-        params: DbQueryParams = []
-    ) {
-        return database.query(queryString).all(...params) as T[];
-    },
-    async execute(queryString: string, params: DbQueryParams = []) {
-        return database.query(queryString).run(...params).changes;
-    },
-    transaction<T>(handler: () => T) {
-        return database.transaction(handler)();
-    },
-    close() {
-        database.close();
-    },
-};
+client.run("PRAGMA foreign_keys = ON;");
 
-export default dbSession;
-export { database };
+// 3. Optional: Configure busy timeout to handle unexpected lock contention
+client.run("PRAGMA busy_timeout = 5000;");
 
+// 4. Initialize Drizzle ORM session with schema
+const dbSession: BunSQLiteDatabase<typeof schema> = drizzle(client, { schema });
+export { dbSession, client };
