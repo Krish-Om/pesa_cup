@@ -1,40 +1,63 @@
 import { type Request, type Response } from "express";
-import fixtureService from "./fixtures.service";
-import { fixtureSchema } from "./fixture.schema";
-import { z } from "zod";
+import {fixturesService} from "./fixtures.service";
 
-type Fixture = z.infer<typeof fixtureSchema>;
+import {ZodError} from "zod/v3";
 
 const fixtureController = {
-  getAllFixtures: async (req: Request, res: Response): Promise<void> => {
-    const result = await fixtureService.getAllFixtures();
-    res.json(result);
+  getAllFixtures: async (req:Request,res: Response): Promise<void> => {
+    try{
+    const result = await fixturesService.getFixtures();
+    res.status(200).json(result);
+    }catch(err){
+      res.status(500).json({error:"Failed to retrieve fixtures."});
+    }
   },
 
   getFixtureById: async (req: Request, res: Response): Promise<void> => {
-    const fixtureId = parseInt(req.params.id);
-    const result = await fixtureService.getFixtureById(fixtureId);
-    if (!result) {
-      res.status(404).json({ error: `Fixture with id ${fixtureId} not found` });
-      return;
+    const fixtureId = Number(req.params.id);
+    if(isNaN(Number(fixtureId))){
+      res.status(400).json({error:"Invalid fixture ID."});
     }
-      res.json(result);
+    try{
+    const result = await fixturesService.getFixtureById(fixtureId);
+    res.status(200).json(result);
+    }catch(err){
+      res.status(404).json({error:"Failed to retrieve fixtures."});
+    }
+  },
+
+  createNewFixture: async(req:Request, res: Response) :Promise<void> => {
+    try{
+    const result = await fixturesService.createNewFixture(req.body);
+    res.status(201).json(result);
+    }catch(err:any){
+      if(err instanceof ZodError){
+        res.status(400).json({error: "Validation failed",details: err.errors});
+      }
+      res.status(500).json({error:err.message || "Failed to create fixtures."});
+    }
   },
 
   updateFixture: async (req: Request, res: Response): Promise<void> => {
-    const fixtureId = parseInt(req.params.id);
-    const updatedData = req.body as Partial<Fixture>;
-
-    const changes = await fixtureService.updateFixture(fixtureId, updatedData);
-    if (changes === 0) {
-      res
-        .status(404)
-        .json({ error: `Fixture with id ${fixtureId} not found` });
-      return;
+    const fixtureId = Number(req.params.id);
+    if (isNaN(Number(fixtureId))) {
+      res.status(400).json({error: "Invalid fixture ID."});
     }
-
-    res.json({ message: `Fixture with id ${fixtureId} updated successfully` });
-  },
+    try {
+      const result = await fixturesService.updateFixture(fixtureId, req.body);
+      res.status(200).json(result);
+    }catch(err:any){
+      if(err instanceof ZodError){
+        res.status(400).json({error:"Validation failed",details: err.errors});
+        return;
+      }
+      if(err.message?.includes("not found")){
+        res.status(404).json({error:err.message});
+        return;
+      }
+      res.status(500).json({error:"Failed to update fixtures."});
+    }
+  }
 };
 
 export default fixtureController;

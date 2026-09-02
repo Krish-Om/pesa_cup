@@ -12,7 +12,7 @@ export const fixtures = sqliteTable('fixtures', {
   date: text('date').notNull(), // ISO date string e.g., "2026-06-15"
   time: text('time').notNull(), // e.g., "14:00"
   venue: text('venue').notNull(),
-  status: text('status', { enum: ['upcoming', 'finished'] })
+  status: text('status', { enum: ['upcoming', 'finished','live'] })
     .notNull()
     .default('upcoming'),
   scoreA: integer('score_a'), // Nullable by default when .notNull() is omitted
@@ -30,7 +30,7 @@ export const insertFixtureSchema = createInsertSchema(fixtures, {
   venue: z.string().min(1).trim(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
   time: z.string().regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format'),
-  status: z.enum(['upcoming', 'finished']).default('upcoming'),
+  status: z.enum(['upcoming','live', 'finished']).default('upcoming'),
   scoreA: z.number().int().nonnegative().nullable().optional(),
   scoreB: z.number().int().nonnegative().nullable().optional(),
 });
@@ -41,5 +41,8 @@ export const selectFixtureSchema = createSelectSchema(fixtures);
 // ======================================================================
 // 3. INFERRED TYPESCRIPT TYPES
 // ======================================================================
-export type Fixture = z.infer<typeof selectFixtureSchema>;
-export type InsertFixturePayload = z.infer<typeof insertFixtureSchema>;
+export type Fixture = typeof fixtures.$inferSelect;
+export type InsertFixturePayload = typeof fixtures.$inferInsert;
+
+// Optional: Zod-specific types if needed elsewhere
+export type InsertFixtureZodPayload = z.infer<typeof insertFixtureSchema>;
