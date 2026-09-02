@@ -23,15 +23,15 @@ app.use(express.json());
 // 3. CORS Configuration
 const ALLOWED_ORIGIN_ENV = process.env.ALLOWED_ORIGINS;
 const allowedOrigins = ALLOWED_ORIGIN_ENV
-    ? ALLOWED_ORIGIN_ENV.split(",")
-    : ["http://localhost:3000", "http://localhost:5173"];
+  ? ALLOWED_ORIGIN_ENV.split(",")
+  : ["http://localhost:3000", "http://localhost:5173"];
 
 app.use(
-    cors({
-      origin: ALLOWED_ORIGIN_ENV === "*" ? "*" : allowedOrigins,
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
-    })
+  cors({
+    origin: ALLOWED_ORIGIN_ENV === "*" ? "*" : allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
 );
 
 // Health check endpoint
@@ -44,8 +44,8 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/fixtures", fixtures);
 app.use("/api/v1/contacts", contacts);
 app.use("/api/v1/standings", standings);
+app.use("/api/v1/gallery", gallery);
 // app.use("/api/v1/scorers", scorers);
-// app.use("/api/v1/gallery", gallery);
 // app.use("/api/v1/tournament", tournament);
 
 // Global Error Handlers
