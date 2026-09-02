@@ -1,38 +1,26 @@
+// server.ts
 import app from "./app";
-// import { seedAll } from "./db/seed";
-import {dbSession} from "./config/database";
+import { dbSession } from "./config/database";
+import { migrate } from "drizzle-orm/bun-sqlite/migrator"; // Or your respective DB driver migrator
+import { logger } from "./utils/logger";
 
-
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 async function startServer() {
   try {
-    // Initialize database schema
-    console.log("Initializing database schema...");
-    // initializeSchema();
+    // Run pending SQL migrations automatically on startup
+    logger.info("Running database migrations...");
+    migrate(dbSession, {migrationsFolder: "./drizzle"});
+    logger.info("Database migrations completed successfully.");
 
-    // Seed data
-    console.log("Seeding database...");
-    // await seedAll();
-
-    // Start server
+    // Start HTTP listener
     app.listen(PORT, () => {
-      console.log(`✓ Server running on http://localhost:${PORT}`);
-      console.log(`✓ Health check: http://localhost:${PORT}/health`);
-      console.log(`✓ Fixtures API: http://localhost:${PORT}/api/v1/fixtures`);
+      logger.info(`✓ Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
-    // dbSession.close();
+    logger.error({ error }, "Failed to run migrations or start server");
     process.exit(1);
   }
 }
-
-// Handle graceful shutdown
-process.on("SIGINT", () => {
-  console.log("\n✓ Shutting down gracefully...");
-  // dbSession.close();
-  process.exit(0);
-});
 
 startServer();

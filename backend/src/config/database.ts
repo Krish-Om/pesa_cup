@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite";
 import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
-import * as schema from "../db/schema.ts";
+import * as schema from "../db/schema";
 import { resolve, dirname } from "path";
 import { mkdirSync } from "fs";
 
