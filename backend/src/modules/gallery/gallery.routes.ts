@@ -1,36 +1,42 @@
-import Router,{type Request,type Response}   from "express";
-import galleryController from "./gallery.controller.ts";
+import express from "express";
+import { asyncHandler } from "../../middlewares/error-handler";
+import {
+  apiReadLimiter,
+  contactFormLimiter,
+} from "../../middlewares/rate-limiter";
+import galleryController from "./gallery.controller";
 
-const gallery = Router();
+const gallery = express.Router();
 
-// GET all gallery items
-gallery.get("/", async (req:Request, res:Response) => {
-  req.log.info("GET /api/v1/gallery endpoint hit");
-  await galleryController.getAllGalleryItems(req, res);
-});
-
-// GET gallery item by id
-gallery.get("/:id", async (req:Request, res:Response) => {
-  req.log.info(`GET /api/v1/gallery/${req.params.id} endpoint hit`);
-  await galleryController.getGalleryItemById(req, res);
-});
-
-// POST create new gallery item
-gallery.post("/", async (req:Request, res:Response) => {
-  req.log.info(`POST /api/v1/gallery endpoint hit with body: ${JSON.stringify(req.body)}`);
-  await galleryController.createGalleryItem(req, res);
-});
-
-// PATCH update gallery item
-gallery.patch("/:id", async (req:Request, res:Response) => {
-  req.log.info(`PATCH /api/v1/gallery/${req.params.id} endpoint hit with body: ${JSON.stringify(req.body)}`);
-  await galleryController.updateGalleryItem(req, res);
-});
-
-// DELETE gallery item
-gallery.delete("/:id", async (req:Request, res:Response) => {
-  req.log.info(`DELETE /api/v1/gallery/${req.params.id} endpoint hit`);
-  await galleryController.deleteGalleryItem(req, res);
-});
+gallery.get(
+  "/",
+  apiReadLimiter,
+  asyncHandler(galleryController.getAllGalleryItems),
+);
+gallery.get(
+  "/:id",
+  apiReadLimiter,
+  asyncHandler(galleryController.getGalleryItemById),
+);
+gallery.post(
+  "/",
+  contactFormLimiter,
+  asyncHandler(galleryController.createGalleryItem),
+);
+gallery.put(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(galleryController.updateGalleryItem),
+);
+gallery.patch(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(galleryController.updateGalleryItem),
+);
+gallery.delete(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(galleryController.deleteGalleryItem),
+);
 
 export default gallery;

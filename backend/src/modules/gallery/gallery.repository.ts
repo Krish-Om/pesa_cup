@@ -1,25 +1,46 @@
-import {z} from "zod";
-import dbSession from "../../config/database.ts";
-import {GalleryCategorySchema, GalleryPhotoSchema} from "./gallery.schema";
-
-type GalleryCategory = z.infer<typeof GalleryCategorySchema>;
-type GalleryPhoto = z.infer<typeof GalleryPhotoSchema>;
+import { eq } from "drizzle-orm";
+import { dbSession } from "../../config/database";
+import {
+  galleryMedia,
+  type DBInput,
+  type DBReturnType,
+} from "./gallery.schema";
 
 export class GalleryRepository {
-    async getAllCategories(): Promise<GalleryCategory[]> {
-        return dbSession.query<GalleryCategory>("SELECT * FROM gallery_categories");
-    }
-    async getCategoryById(categoryId: string): Promise<GalleryCategory | null> {
-        const categories = await dbSession.query<GalleryCategory>(
-            "SELECT * FROM gallery_categories WHERE id = ?",
-            [categoryId]
-        );
-        return categories?.[0] ?? null;
-    }
-    async getPhotosByCategoryId(categoryId: string): Promise<GalleryPhoto[]> {
-        return dbSession.query<GalleryPhoto>(
-            "SELECT * FROM gallery_photos WHERE category_id = ? ORDER BY sort_order ASC",
-            [categoryId]
-        );
-    }
+  async getAllMedia(): Promise<DBReturnType[]> {
+    return dbSession.select().from(galleryMedia).all();
+  }
+  async getMediaById(id: number): Promise<DBReturnType | null> {
+    const [result] = await dbSession
+      .select()
+      .from(galleryMedia)
+      .where(eq(galleryMedia.id, id));
+    return result ?? null;
+  }
+  async createMedia(data: DBInput): Promise<DBReturnType | null> {
+    const [result] = await dbSession
+      .insert(galleryMedia)
+      .values(data)
+      .returning();
+    return result ?? null;
+  }
+  async updateMedia(
+    id: number,
+    data: Partial<DBInput>,
+  ): Promise<DBReturnType | null> {
+    const [result] = await dbSession
+      .update(galleryMedia)
+      .set(data)
+      .where(eq(galleryMedia.id, id))
+      .returning();
+    return result ?? null;
+  }
+  async deleteMedia(id: number): Promise<DBReturnType | null> {
+    const [result] = await dbSession
+      .delete(galleryMedia)
+      .where(eq(galleryMedia.id, id))
+      .returning();
+    return result ?? null;
+  }
 }
+export const galleryRepository = new GalleryRepository();
