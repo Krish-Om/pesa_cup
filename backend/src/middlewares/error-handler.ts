@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import {ZodError} from "zod/v3";
+import { ZodError } from "zod";
 
 export interface AppError extends Error {
   status?: number;
@@ -10,19 +10,28 @@ export const errorHandler = (
   err: any | Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    res.status(400).json({
+      success: false,
+      message: "Invalid JSON payload",
+      errors: ["Request body contains malformed JSON"],
+    });
+    return;
+  }
+
   if (err instanceof ZodError) {
-    const formattedErros= err.issues.map((issue)=>{
+    const formattedErrors = err.issues.map((issue) => {
       const field = issue.path.join(".");
-      return field? `{field} : {issue.message}` : issue.message;
-    })
+      return field ? `${field} : ${issue.message}` : issue.message;
+    });
 
     res.status(400).json({
-      success:false,
-      message : "Validation failed",
-      errors:formattedErros
-    })
+      success: false,
+      message: "Validation failed",
+      errors: formattedErrors,
+    });
     return;
   }
   const status = err.status || 500;
@@ -46,7 +55,7 @@ export const errorHandler = (
 export const notFoundHandler = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   res.status(404).json({
     success: false,
