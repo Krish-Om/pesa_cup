@@ -34,15 +34,8 @@ export const insertFixtureSchema = createInsertSchema(fixtures, {
   scoreA: z.number().int().nonnegative().nullable().optional(),
   scoreB: z.number().int().nonnegative().nullable().optional(),
 });
-
-// For API response payload typing
-export const selectFixtureSchema = createSelectSchema(fixtures);
-
 // ======================================================================
 // 3. INFERRED TYPESCRIPT TYPES
 // ======================================================================
 export type Fixture = typeof fixtures.$inferSelect;
 export type InsertFixturePayload = typeof fixtures.$inferInsert;
-
-// Optional: Zod-specific types if needed elsewhere
-export type InsertFixtureZodPayload = z.infer<typeof insertFixtureSchema>;

@@ -10,25 +10,37 @@ export const contactMessages = sqliteTable('contact_messages', {
   subject: text('subject').notNull(),
   message: text('message').notNull(),
   status: text('status', { enum: ['new', 'read', 'archived'] })
-    .notNull()
-    .default('new'),
+      .notNull()
+      .default('new'),
   createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .$defaultFn(() => new Date()),
+      .notNull()
+      .$defaultFn(() => new Date()),
 });
 
 // ======================================================================
-// FIXED ZOD SCHEMA DEFINITION
+// ZOD SCHEMAS
 // ======================================================================
+
+// 1. Insert Schema (for POST requests)
 export const insertContactSchema = createInsertSchema(contactMessages, {
   name: z.string().min(1, 'Name is required'),
-  email: z.email('Invalid email address'),
+  email: z.email('Invalid email address'), // Fixed: z.string().email()
   subject: z.string().min(1, 'Subject is required'),
   message: z.string().min(1, 'Message is required'),
-  status: z.enum(['new', 'read', 'archived']).default('new'),
 });
 
+// 2. Select Schema (for validated DB output)
 export const selectContactSchema = createSelectSchema(contactMessages);
 
-export type ContactMessage = z.infer<typeof selectContactSchema>;
-export type InsertContactPayload = z.infer<typeof insertContactSchema>;
+// ======================================================================
+// TYPE EXPORTS
+// ======================================================================
+
+// DB Record Type (Out of DB)
+export type ContactMessage = typeof contactMessages.$inferSelect;
+
+// DB Insert Payload Type (Into DB)
+export type InsertContactPayload = typeof contactMessages.$inferInsert;
+
+// API Request Body Payload Type (From Client)
+export type InsertContactInput = z.infer<typeof insertContactSchema>;
