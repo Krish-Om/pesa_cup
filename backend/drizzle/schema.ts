@@ -1,4 +1,4 @@
-import { sqliteTable, AnySQLiteColumn, integer, text, foreignKey } from "drizzle-orm/sqlite-core"
+import { sqliteTable, type AnySQLiteColumn, integer, text, foreignKey } from "drizzle-orm/sqlite-core"
   import { sql } from "drizzle-orm"
 
 export const contactMessages = sqliteTable("contact_messages", {
