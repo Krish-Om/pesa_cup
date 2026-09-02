@@ -1,16 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-
-export interface AppError extends Error {
-  status?: number;
-  errors?: string[];
-}
+import { AppError } from "../utils/app-error";
 
 export const errorHandler = (
-  err: any | Error,
+  err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ): void => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     res.status(400).json({
@@ -24,7 +20,7 @@ export const errorHandler = (
   if (err instanceof ZodError) {
     const formattedErrors = err.issues.map((issue) => {
       const field = issue.path.join(".");
-      return field ? `${field} : ${issue.message}` : issue.message;
+      return { field, message: issue.message };
     });
 
     res.status(400).json({
@@ -34,9 +30,9 @@ export const errorHandler = (
     });
     return;
   }
-  const status = err.status || 500;
-  const message = err.message || "Internal Server Error";
-  const errors = err.errors || [];
+  const status = err instanceof AppError ? err.status : 500;
+  const message = err instanceof Error ? err.message : "Internal Server Error";
+  const errors = err instanceof AppError ? err.errors : [];
 
   console.error(`[${new Date().toISOString()}] Error:`, {
     status,
