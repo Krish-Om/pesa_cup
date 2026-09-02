@@ -1,39 +1,39 @@
-import { type Request, type Response } from "express";
-import fixtureService from "./fixtures.service";
-import { fixtureSchema } from "./fixture.schema";
-import { z } from "zod";
+import { type NextFunction, type Request, type Response } from "express";
+import { AppError } from "../../utils/app-error";
+import { fixturesService } from "./fixtures.service";
 
-type Fixture = z.infer<typeof fixtureSchema>;
+const parseId = (value: string): number => Number(value);
 
 const fixtureController = {
   getAllFixtures: async (req: Request, res: Response): Promise<void> => {
-    const result = await fixtureService.getAllFixtures();
-    res.json(result);
+    res.status(200).json(await fixturesService.getFixtures());
   },
-
-  getFixtureById: async (req: Request, res: Response): Promise<void> => {
-    const fixtureId = parseInt(req.params.id);
-    const result = await fixtureService.getFixtureById(fixtureId);
-    if (!result) {
-      res.status(404).json({ error: `Fixture with id ${fixtureId} not found` });
+  getFixtureById: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    const id = parseId(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      next(new AppError("Invalid fixture ID", 400));
       return;
     }
-      res.json(result);
+    res.status(200).json(await fixturesService.getFixtureById(id));
   },
-
-  updateFixture: async (req: Request, res: Response): Promise<void> => {
-    const fixtureId = parseInt(req.params.id);
-    const updatedData = req.body as Partial<Fixture>;
-
-    const changes = await fixtureService.updateFixture(fixtureId, updatedData);
-    if (changes === 0) {
-      res
-        .status(404)
-        .json({ error: `Fixture with id ${fixtureId} not found` });
+  createNewFixture: async (req: Request, res: Response): Promise<void> => {
+    res.status(201).json(await fixturesService.createNewFixture(req.body));
+  },
+  updateFixture: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    const id = parseId(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      next(new AppError("Invalid fixture ID", 400));
       return;
     }
-
-    res.json({ message: `Fixture with id ${fixtureId} updated successfully` });
+    res.status(200).json(await fixturesService.updateFixture(id, req.body));
   },
 };
 

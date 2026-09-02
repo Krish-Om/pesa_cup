@@ -1,16 +1,72 @@
-# React + Vite
+# Pesa Cup — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The web frontend for the **Pesa Cup** tournament platform. Built with React 19 and Vite.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Tool | Purpose |
+|------|---------|
+| React 19 | UI framework |
+| Vite | Dev server & bundler |
+| React Router v7 | Client-side routing |
+| Axios | HTTP client |
+| Lucide React / React Icons | Icons |
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+src/
+├── components/     # Reusable UI components (Header, Footer, Hero, Fixtures, Standings, etc.)
+├── pages/          # Route-level page components (Home, Standings, Gallery, Contact, Scorers)
+├── assets/         # Static assets (images, etc.)
+├── css/            # Global stylesheets
+└── App.jsx         # Root component with route definitions
+```
 
-## Expanding the ESLint configuration
+## Routes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Path | Page |
+|------|------|
+| `/` | Home |
+| `/fixtures` | Fixtures |
+| `/standings` | Standings |
+| `/gallery` | Gallery |
+| `/gallery/:categoryId` | Gallery Category |
+| `/contact` | Contact |
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) ≥ 18 **or** [Bun](https://bun.sh/)
+
+### Install & Run
+
+```bash
+# with npm
+npm install
+npm run dev
+
+# with bun
+bun install
+bun run dev
+```
+
+The dev server starts at **http://localhost:5173**.
+
+### Other Commands
+
+```bash
+npm run build    # Production build → dist/
+npm run preview  # Preview production build locally
+npm run lint     # Run ESLint
+```
+
+## Docker
+
+A `dockerfile` is included for containerised development using Bun.
+
+```bash
+docker build -t pesa-cup-frontend .
+docker run -p 5173:5173 pesa-cup-frontend
+```

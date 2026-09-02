@@ -1,24 +1,78 @@
-import {type Request, type Response } from "express";
-import standingsService from "./standings.service";
-import { standingsSchema } from "./standings.schema";
-import { z } from "zod";
+import { type NextFunction, type Request, type Response } from "express";
 
-type Standing = z.infer<typeof standingsSchema>;
+import { standingsService } from "./standings.service";
+import { AppError } from "../../utils/app-error";
 
 const standingsController = {
-  getAllStandings: async (req: Request, res: Response): Promise<void> => {
-    const result = await standingsService.getAllStandings();
-    res.json(result);
+  getAllStandings: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await standingsService.getStandings();
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
   },
 
-    getStandingById: async (req: Request, res: Response): Promise<void> => {
-    const standingId = parseInt(req.params.id);
-    const result = await standingsService.getStandingById(standingId);
-    if (!result) {
-      res.status(404).json({ error: `Standing with id ${standingId} not found` });
+  getStandingById: async (req: Request, res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      next(new AppError("Invalid standing ID", 400));
       return;
     }
-      res.json(result);
+    try {
+      const result = await standingsService.getStandingById(id);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  createStanding: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const result = await standingsService.createStanding(req.body);
+      res.status(201).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+  updateStandingById: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      next(new AppError("Invalid standing ID", 400));
+      return;
+    }
+    try {
+      const result = await standingsService.updateStanding(id, req.body);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  deleteStanding: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      next(new AppError("Invalid standing ID", 400));
+      return;
+    }
+    try {
+      await standingsService.deleteStanding(id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
   },
 };
 

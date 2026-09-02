@@ -23,4 +23,3 @@ services:
       - ./frontend/.env
     depends_on:
       - backend
-          

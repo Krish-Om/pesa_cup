@@ -1,24 +1,36 @@
-import express, { type Request, type Response } from "express";
-import fixtureController from "./fixtures.controller";
-
+import express from "express";
+import fixturesController from "./fixtures.controller";
+import { asyncHandler } from "../../middlewares/error-handler";
+import {
+  apiReadLimiter,
+  contactFormLimiter,
+} from "../../middlewares/rate-limiter";
 const fixtures = express.Router();
 
-// GET all fixtures
-fixtures.get("/", async (req:Request, res:Response) => {
-  req.log.info("GET /api/v1/fixtures endpoint hit");
-  await fixtureController.getAllFixtures(req, res);
-});
-
-// GET fixture by id
-fixtures.get("/:id", async (req:Request, res:Response) => {
-  req.log.info(`GET /api/v1/fixtures/${req.params.id} endpoint hit`);
-await fixtureController.getFixtureById(req, res);
-});
-
-// PATCH update fixture
-fixtures.patch("/:id",async (req:Request,res:Response)=>{
-    req.log.info(`PATCH /api/v1/fixtures/${req.params.id} endpoint hit with body: ${JSON.stringify(req.body)}`);
-    await fixtureController.updateFixture(req,res);
-});
+fixtures.get(
+  "/",
+  apiReadLimiter,
+  asyncHandler(fixturesController.getAllFixtures),
+);
+fixtures.get(
+  "/:id",
+  apiReadLimiter,
+  asyncHandler(fixturesController.getFixtureById),
+);
+fixtures.post(
+  "/",
+  contactFormLimiter,
+  asyncHandler(fixturesController.createNewFixture),
+);
+fixtures.put(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(fixturesController.updateFixture),
+);
+fixtures.patch(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(fixturesController.updateFixture),
+);
 
 export default fixtures;
