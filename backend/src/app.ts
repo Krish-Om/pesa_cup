@@ -42,10 +42,10 @@ app.get("/api/v1/health", (req, res) => {
 
 // Module Routes
 app.use("/api/v1/fixtures", fixtures);
+app.use("/api/v1/contacts", contacts);
 // app.use("/api/v1/standings", standings);
 // app.use("/api/v1/scorers", scorers);
 // app.use("/api/v1/gallery", gallery);
-// app.use("/api/v1/contacts", contacts);
 // app.use("/api/v1/tournament", tournament);
 
 // Global Error Handlers
