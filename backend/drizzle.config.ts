@@ -10,6 +10,6 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "sqlite",
   dbCredentials: {
-    url: "../data/pesa_cup_dev.db",
+    url: "../data/pesa_cup_futsal_dev.db",
   },
 });
