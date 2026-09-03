@@ -7,8 +7,10 @@ import {
 } from "./gallery.schema";
 
 export class GalleryRepository {
-  async getAllMedia(): Promise<DBReturnType[]> {
-    return dbSession.select().from(galleryMedia).all();
+  async getAllMedia(category?: string): Promise<DBReturnType[]> {
+    const query = dbSession.select().from(galleryMedia);
+    if (category) return query.where(eq(galleryMedia.category, category)).all();
+    return query.all();
   }
   async getMediaById(id: number): Promise<DBReturnType | null> {
     const [result] = await dbSession
