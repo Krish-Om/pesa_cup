@@ -1,14 +1,40 @@
-// `GET /api/v1/tournament` - tournament metadata and summary stats
-// - Tournament: name, season, venue, organizer, summary stats
-import express, { type Request, type Response } from "express";
+import express from "express";
+import { asyncHandler } from "../../middlewares/error-handler";
+import {
+  apiReadLimiter,
+  contactFormLimiter,
+} from "../../middlewares/rate-limiter";
 import tournamentController from "./tournament.controller";
 
 const tournament = express.Router();
+const tournaments = express.Router();
 
-// GET tournament metadata and summary stats
-tournament.get("/", async (req: Request, res: Response) => {
-  req.log.info("GET /api/v1/tournament endpoint hit");
-  await tournamentController.getTournamentMetadata(req, res);
-});
+tournament.get(
+  "/",
+  apiReadLimiter,
+  asyncHandler(tournamentController.getTournamentMetadata),
+);
+tournaments.get("/", apiReadLimiter, asyncHandler(tournamentController.getAll));
+tournaments.get(
+  "/:id",
+  apiReadLimiter,
+  asyncHandler(tournamentController.getById),
+);
+tournaments.post(
+  "/",
+  contactFormLimiter,
+  asyncHandler(tournamentController.create),
+);
+tournaments.patch(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(tournamentController.update),
+);
+tournaments.delete(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(tournamentController.delete),
+);
 
 export default tournament;
+export { tournaments as tournamentsRouter };
