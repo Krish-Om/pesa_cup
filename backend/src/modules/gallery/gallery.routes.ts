@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import { asyncHandler } from "../../middlewares/error-handler";
 import {
   apiReadLimiter,
@@ -7,6 +8,7 @@ import {
 import galleryController from "./gallery.controller";
 
 const gallery = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 gallery.get(
   "/",
@@ -21,6 +23,7 @@ gallery.get(
 gallery.post(
   "/",
   contactFormLimiter,
+  upload.single("file"),
   asyncHandler(galleryController.createGalleryItem),
 );
 gallery.put(

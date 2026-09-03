@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import { GalleryRepository, galleryRepository } from "./gallery.repository";
 import {
   insertGalleryMediaSchema,
@@ -7,16 +6,13 @@ import {
   type ZodInput,
 } from "./gallery.schema";
 import { NotFoundError } from "../../utils/app-error";
-import {
-  deleteFromS3Placeholder,
-  uploadToS3Placeholder,
-} from "../../utils/s3-storage";
+import { deleteLocalFile, saveLocalFile } from "../../utils/local-storage";
 
 export class GalleryService {
   constructor(private readonly repo: GalleryRepository = galleryRepository) {}
 
-  async getMedia(): Promise<DBReturnType[]> {
-    return this.repo.getAllMedia();
+  async getMedia(category?: string): Promise<DBReturnType[]> {
+    return this.repo.getAllMedia(category);
   }
 
   async getMediaById(id: number): Promise<DBReturnType> {
@@ -28,27 +24,22 @@ export class GalleryService {
 
   async createMedia(
     payload: ZodInput,
-    file?: { buffer: Buffer; originalname: string },
+    file: {
+      buffer: Buffer;
+      originalname: string;
+      mimetype: string;
+      size: number;
+    },
   ): Promise<DBReturnType> {
     const validated = insertGalleryMediaSchema.parse(payload);
-    const stored = file
-      ? await uploadToS3Placeholder(file.buffer, file.originalname)
-      : { mediaUrl: validated.mediaUrl, fileKey: validated.fileKey };
-
-    if (!stored.mediaUrl || !stored.fileKey) {
-      throw new ZodError([
-        {
-          code: "custom",
-          path: ["mediaUrl"],
-          message: "Media URL is required when no file is uploaded",
-        },
-      ]);
-    }
+    const stored = await saveLocalFile(file.buffer, file.originalname,file.mimetype);
 
     const result = await this.repo.createMedia({
       ...(validated as DBInput),
       mediaUrl: stored.mediaUrl,
       fileKey: stored.fileKey,
+      mimeType: file.mimetype,
+      fileSize: file.size,
     });
     if (!result) throw new Error("Failed to create gallery media");
     return result;
@@ -72,11 +63,10 @@ export class GalleryService {
     const result = await this.repo.getMediaById(id);
     if (!result)
       throw new NotFoundError(`Gallery media with ID ${id} not found`);
-    await deleteFromS3Placeholder(result.fileKey);
+    await deleteLocalFile(result.fileKey);
     await this.repo.deleteMedia(id);
     return result;
   }
 }
 
 export const galleryService = new GalleryService();
-export default galleryService;
