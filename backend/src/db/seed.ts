@@ -5,14 +5,27 @@ import {
   galleryCategories,
   galleryMedia,
   galleryPhotos,
+  registrations,
   scorers,
   standings,
+  teams,
   tournaments,
 } from "./schema";
 
 async function seed() {
-  console.log("🌱 Seeding database...");
-  // 1. Contact Messages
+  console.log("Seeding database...");
+
+  await dbSession.delete(galleryPhotos);
+  await dbSession.delete(galleryMedia);
+  await dbSession.delete(galleryCategories);
+  await dbSession.delete(registrations);
+  await dbSession.delete(scorers);
+  await dbSession.delete(standings);
+  await dbSession.delete(fixtures);
+  await dbSession.delete(teams);
+  await dbSession.delete(contactMessages);
+  await dbSession.delete(tournaments);
+
   await dbSession.insert(contactMessages).values([
     {
       name: "Suman Shrestha",
@@ -30,40 +43,54 @@ async function seed() {
     },
   ]);
 
-  // 2. Tournaments
-  const tournamentRows = await dbSession
-      .insert(tournaments)
-      .values([
-        {
-          name: "Pesa Cup Futsal Championship 2026",
-          slug: "pesa-cup-futsal-2026",
-          startDate: "2026-10-01",
-          endDate: "2026-10-05",
-          status: "UPCOMING",
-          venue: "Samriddhi Futsal Arena",
-          organizer: "Sports Committee",
-        },
-        {
-          name: "Inter-Faculty Football League",
-          slug: "inter-faculty-football-league",
-          startDate: "2026-08-10",
-          endDate: "2026-08-20",
-          status: "COMPLETED",
-          venue: "Main Ground",
-          organizer: "Student Club",
-        },
-      ])
-      .returning();
+  const [currentTournament, completedTournament] = await dbSession
+    .insert(tournaments)
+    .values([
+      {
+        name: "Pesa Cup Futsal Championship 2026",
+        slug: "pesa-cup-futsal-2026",
+        startDate: "2026-10-01",
+        endDate: "2026-10-05",
+        status: "UPCOMING",
+        venue: "Samriddhi Futsal Arena",
+        organizer: "Sports Committee",
+      },
+      {
+        name: "Inter-Faculty Football League",
+        slug: "inter-faculty-football-league",
+        startDate: "2026-08-10",
+        endDate: "2026-08-20",
+        status: "COMPLETED",
+        venue: "Main Ground",
+        organizer: "Student Club",
+      },
+    ])
+    .returning();
+  if (!currentTournament || !completedTournament)
+    throw new Error("Failed to seed tournaments");
 
-  const tourneyAId = tournamentRows[0]?.id ?? 1;
-  const tourneyBId = tournamentRows[1]?.id ?? 2;
+  const seededTeams = await dbSession
+    .insert(teams)
+    .values(
+      ["CSIT Strikers", "BCA Warriors", "BBA Lions", "BIM United"].map(
+        (name) => ({
+          name,
+          captainName: `${name} Captain`,
+          captainEmail: `${name.toLowerCase().replaceAll(" ", ".")}@example.com`,
+          captainPhone: "9800000000",
+        }),
+      ),
+    )
+    .returning();
+  const team = Object.fromEntries(
+    seededTeams.map((item) => [item.name, item.id]),
+  );
 
-  // 3. Scorers
   await dbSession.insert(scorers).values([
     {
       playerName: "Rohan KC",
-      teamName: "CSIT Strikers",
-      tournamentId: tourneyAId,
+      teamId: team["CSIT Strikers"],
+      tournamentId: currentTournament.id,
       goals: 8,
       assists: 3,
       rank: 1,
@@ -71,8 +98,8 @@ async function seed() {
     },
     {
       playerName: "Bishal Thapa",
-      teamName: "BCA Warriors",
-      tournamentId: tourneyAId,
+      teamId: team["BCA Warriors"],
+      tournamentId: currentTournament.id,
       goals: 6,
       assists: 5,
       rank: 2,
@@ -80,53 +107,50 @@ async function seed() {
     },
     {
       playerName: "Anish Maharjan",
-      teamName: "BBA Lions",
-      tournamentId: tourneyBId,
+      teamId: team["BBA Lions"],
+      tournamentId: completedTournament.id,
       goals: 11,
       assists: 2,
       rank: 1,
       avatar: "/uploads/avatars/anish.webp",
     },
   ]);
-
-  // 4. Fixtures (Omit null score fields so Drizzle uses undefined defaults)
   await dbSession.insert(fixtures).values([
     {
-      teamA: "CSIT Strikers",
-      teamB: "BCA Warriors",
+      homeTeamId: team["CSIT Strikers"],
+      awayTeamId: team["BCA Warriors"],
+      tournamentId: currentTournament.id,
       date: "2026-10-01",
       time: "10:00 AM",
       venue: "Court A",
-
     },
     {
-      teamA: "BBA Lions",
-      teamB: "BIM United",
+      homeTeamId: team["BBA Lions"],
+      awayTeamId: team["BIM United"],
+      tournamentId: currentTournament.id,
       date: "2026-10-01",
       time: "11:30 AM",
       venue: "Court B",
-
     },
     {
-      teamA: "CSIT Strikers",
-      teamB: "BBA Lions",
+      homeTeamId: team["CSIT Strikers"],
+      awayTeamId: team["BBA Lions"],
+      tournamentId: completedTournament.id,
       date: "2026-08-15",
       time: "02:00 PM",
       venue: "Main Ground",
+      status: "finished",
       scoreA: 3,
       scoreB: 2,
     },
   ]);
-
-  // 5. Standings
   await dbSession.insert(standings).values([
     {
-      team: "CSIT Strikers",
+      teamId: team["CSIT Strikers"],
+      tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
       won: 3,
-      draw: 0,
-      lost: 0,
       goalFor: 9,
       goalAgainst: 2,
       goalDifference: 7,
@@ -134,11 +158,11 @@ async function seed() {
       position: 1,
     },
     {
-      team: "BCA Warriors",
+      teamId: team["BCA Warriors"],
+      tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
       won: 2,
-      draw: 0,
       lost: 1,
       goalFor: 6,
       goalAgainst: 4,
@@ -147,11 +171,11 @@ async function seed() {
       position: 2,
     },
     {
-      team: "BBA Lions",
+      teamId: team["BBA Lions"],
+      tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
       won: 1,
-      draw: 0,
       lost: 2,
       goalFor: 4,
       goalAgainst: 6,
@@ -160,54 +184,60 @@ async function seed() {
       position: 3,
     },
   ]);
+  await dbSession
+    .insert(registrations)
+    .values({
+      tournamentId: currentTournament.id,
+      teamName: "Pesa Cup Newcomers",
+      captainName: "Nabin Rai",
+      captainEmail: "nabin@example.com",
+      captainPhone: "9811111111",
+      playerCount: 8,
+      status: "PENDING",
+      teamId: null,
+    });
 
-  // 6. Gallery Categories
-  const categoryRows = await dbSession
-      .insert(galleryCategories)
-      .values([
-        {
-          id: "opening-ceremony",
-          label: "Opening Ceremony",
-          description: "Highlights from the tournament inauguration",
-          coverImage: "/uploads/gallery/opening-cover.webp",
-          photoCount: 2,
-        },
-        {
-          id: "matchday-1",
-          label: "Matchday 1 Highlights",
-          description: "Action shots from group stage matches",
-          coverImage: "/uploads/gallery/matchday1-cover.webp",
-          photoCount: 1,
-        },
-      ])
-      .returning();
-
-  const catOpeningId = categoryRows[0]?.id ?? "opening-ceremony";
-  const catMatchesId = categoryRows[1]?.id ?? "matchday-1";
-
-  // 7. Gallery Photos
+  const [opening, matchday] = await dbSession
+    .insert(galleryCategories)
+    .values([
+      {
+        id: "opening-ceremony",
+        label: "Opening Ceremony",
+        description: "Highlights from the tournament inauguration",
+        coverImage: "/uploads/gallery/opening-cover.webp",
+        photoCount: 2,
+      },
+      {
+        id: "matchday-1",
+        label: "Matchday 1 Highlights",
+        description: "Action shots from group stage matches",
+        coverImage: "/uploads/gallery/matchday1-cover.webp",
+        photoCount: 1,
+      },
+    ])
+    .returning();
+  if (!opening || !matchday)
+    throw new Error("Failed to seed gallery categories");
   await dbSession.insert(galleryPhotos).values([
     {
-      categoryId: catOpeningId,
+      categoryId: opening.id,
       caption: "Chief Guest inaugurating the event",
       imagePath: "/uploads/gallery/opening-1.webp",
-      sortOrder: 1
+      sortOrder: 1,
     },
     {
-      categoryId: catOpeningId,
+      categoryId: opening.id,
       caption: "Team captain oath ceremony",
       imagePath: "/uploads/gallery/opening-2.webp",
-      sortOrder: 2
+      sortOrder: 2,
     },
     {
-      categoryId: catMatchesId,
+      categoryId: matchday.id,
       caption: "Winning goal celebration by CSIT",
       imagePath: "/uploads/gallery/goal-celebration.webp",
-      sortOrder: 1
+      sortOrder: 1,
     },
   ]);
-
-  // 8. Gallery Media
   await dbSession.insert(galleryMedia).values([
     {
       title: "Opening Banner High-Res",
@@ -217,7 +247,7 @@ async function seed() {
       mediaUrl: "/uploads/1725300000_banner.webp",
       fileKey: "1725300000_banner.webp",
       mimeType: "image/webp",
-      fileSize: 245120
+      fileSize: 245120,
     },
     {
       title: "Trophy Reveal",
@@ -227,16 +257,15 @@ async function seed() {
       mediaUrl: "/uploads/1725300500_trophy.webp",
       fileKey: "1725300500_trophy.webp",
       mimeType: "image/webp",
-      fileSize: 312000
+      fileSize: 312000,
     },
   ]);
-
-  console.log("✅ Seed completed successfully!");
+  console.log("Seed completed successfully!");
 }
 
 seed()
-    .catch((err) => {
-      console.error("❌ Seed failed:", err);
-      process.exit(1);
-    })
-    .then(() => process.exit(0));
+  .catch((error) => {
+    console.error("Seed failed:", error);
+    process.exit(1);
+  })
+  .then(() => process.exit(0));

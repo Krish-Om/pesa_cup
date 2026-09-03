@@ -1,6 +1,7 @@
 import { Database } from "bun:sqlite";
 import { BunSQLiteDatabase, drizzle } from "drizzle-orm/bun-sqlite";
 import * as schema from "../db/schema";
+import * as relations from "../db/relations";
 import { resolve, dirname } from "path";
 import { mkdirSync } from "fs";
 
@@ -8,7 +9,10 @@ let databasePath: string;
 
 if (process.env.NODE_ENV === "development" || !process.env.NODE_ENV) {
   // Resolves to pesa_cup/data/pesa_cup_futsal_dev.db
-  databasePath = resolve(import.meta.dir, "../../../data/pesa_cup_futsal_dev.db");
+  databasePath = resolve(
+    import.meta.dir,
+    "../../../data/pesa_cup_futsal_dev.db",
+  );
 } else {
   // Resolves to pesa_cup/data/pesa_cup_futsal_prod.db
   databasePath = process.env.DATABASE_PATH
@@ -31,5 +35,10 @@ client.run("PRAGMA foreign_keys = ON;");
 client.run("PRAGMA busy_timeout = 5000;");
 
 // 4. Initialize Drizzle ORM session with schema
-const dbSession: BunSQLiteDatabase<typeof schema> = drizzle(client, { schema });
+const dbSession: BunSQLiteDatabase<typeof schema & typeof relations> = drizzle(
+  client,
+  {
+    schema: { ...schema, ...relations },
+  },
+);
 export { dbSession, client };
