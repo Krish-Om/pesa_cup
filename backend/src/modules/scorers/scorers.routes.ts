@@ -1,17 +1,33 @@
-import Router, {type Request,type Response} from 'express';
-import scorersController from './scorers.controllers';
+import express from "express";
+import { asyncHandler } from "../../middlewares/error-handler";
+import {
+  apiReadLimiter,
+  contactFormLimiter,
+} from "../../middlewares/rate-limiter";
+import scorersController from "./scorers.controllers";
 
-const scorersRouter = Router();
+const scorers = express.Router();
 
-scorersRouter.get('/', async (req: Request, res: Response) =>{
-    req.log.info('Fetching all scorers');
-   await scorersController.getAllScorers(req, res);
-}
+scorers.get("/", apiReadLimiter, asyncHandler(scorersController.getAllScorers));
+scorers.get(
+  "/:id",
+  apiReadLimiter,
+  asyncHandler(scorersController.getScorerById),
+);
+scorers.post(
+  "/",
+  contactFormLimiter,
+  asyncHandler(scorersController.createScorer),
+);
+scorers.patch(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(scorersController.updateScorer),
+);
+scorers.delete(
+  "/:id",
+  contactFormLimiter,
+  asyncHandler(scorersController.deleteScorer),
 );
 
-scorersRouter.get('/:id', async (req:Request,res:Response)=>{
-    req.log.info(`Fetching scorer with id: ${req.params.id}`);
-    await scorersController.getScorerById(req, res);
-});
-
-export default scorersRouter;
+export default scorers;
