@@ -1,5 +1,4 @@
-import { sqliteTable, type AnySQLiteColumn, integer, text, foreignKey } from "drizzle-orm/sqlite-core"
-  import { sql } from "drizzle-orm"
+import { sqliteTable, integer, text, uniqueIndex } from "drizzle-orm/sqlite-core"
 
 export const contactMessages = sqliteTable("contact_messages", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
@@ -32,6 +31,19 @@ export const galleryCategories = sqliteTable("gallery_categories", {
 	createdAt: integer("created_at").notNull(),
 });
 
+export const galleryMedia = sqliteTable("gallery_media", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	title: text().notNull(),
+	description: text(),
+	category: text().default("general").notNull(),
+	albumId: integer("album_id"),
+	mediaUrl: text("media_url").notNull(),
+	fileKey: text("file_key").notNull(),
+	mimeType: text("mime_type").notNull(),
+	fileSize: integer("file_size").notNull(),
+	createdAt: integer("created_at").notNull(),
+});
+
 export const galleryPhotos = sqliteTable("gallery_photos", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
 	categoryId: text("category_id").notNull().references(() => galleryCategories.id, { onDelete: "cascade", onUpdate: "cascade" } ),
@@ -43,8 +55,9 @@ export const galleryPhotos = sqliteTable("gallery_photos", {
 
 export const scorers = sqliteTable("scorers", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	name: text().notNull(),
-	team: text().notNull(),
+	playerName: text("player_name").notNull(),
+	teamName: text("team_name").notNull(),
+	tournamentId: integer("tournament_id").references(() => tournaments.id),
 	goals: integer().default(0).notNull(),
 	assists: integer().default(0).notNull(),
 	rank: integer(),
@@ -67,4 +80,19 @@ export const standings = sqliteTable("standings", {
 	position: integer(),
 	createdAt: text("created_at").default("sql`(CURRENT_TIMESTAMP)`").notNull(),
 });
+
+export const tournaments = sqliteTable("tournaments", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	name: text().notNull(),
+	slug: text().notNull(),
+	startDate: text("start_date").notNull(),
+	endDate: text("end_date").notNull(),
+	status: text().default("UPCOMING").notNull(),
+	venue: text(),
+	organizer: text(),
+	createdAt: integer("created_at").notNull(),
+},
+(table) => [
+	uniqueIndex("tournaments_slug_unique").on(table.slug),
+]);
 

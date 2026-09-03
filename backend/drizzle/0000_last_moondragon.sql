@@ -29,6 +29,19 @@ CREATE TABLE `gallery_categories` (
 	`created_at` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE `gallery_media` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`title` text NOT NULL,
+	`description` text,
+	`category` text DEFAULT 'general' NOT NULL,
+	`album_id` integer,
+	`media_url` text NOT NULL,
+	`file_key` text NOT NULL,
+	`mime_type` text NOT NULL,
+	`file_size` integer NOT NULL,
+	`created_at` integer NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `gallery_photos` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`category_id` text NOT NULL,
@@ -41,13 +54,15 @@ CREATE TABLE `gallery_photos` (
 --> statement-breakpoint
 CREATE TABLE `scorers` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text NOT NULL,
-	`team` text NOT NULL,
+	`player_name` text NOT NULL,
+	`team_name` text NOT NULL,
+	`tournament_id` integer,
 	`goals` integer DEFAULT 0 NOT NULL,
 	`assists` integer DEFAULT 0 NOT NULL,
 	`rank` integer,
 	`avatar` text,
-	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
+	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	FOREIGN KEY (`tournament_id`) REFERENCES `tournaments`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `standings` (
@@ -65,3 +80,17 @@ CREATE TABLE `standings` (
 	`position` integer,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
+--> statement-breakpoint
+CREATE TABLE `tournaments` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`slug` text NOT NULL,
+	`start_date` text NOT NULL,
+	`end_date` text NOT NULL,
+	`status` text DEFAULT 'UPCOMING' NOT NULL,
+	`venue` text,
+	`organizer` text,
+	`created_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `tournaments_slug_unique` ON `tournaments` (`slug`);
