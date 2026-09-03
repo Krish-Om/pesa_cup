@@ -68,9 +68,9 @@ cd frontend && bun run dev
 
 ## TODO
 
-- [ ] **S3 bucket integration** — migrate gallery image storage from local filesystem to an S3-compatible bucket (AWS S3 or MinIO)
-- [ ] **Backend S3 config** — add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`, and `S3_ENDPOINT` to backend `.env` and update gallery upload/retrieval logic
-- [ ] **Dockerize S3 storage** — add a [MinIO](https://min.io/) service to `compose.yml` as a local S3-compatible store for development
+- [X] **S3 bucket integration** — migrate gallery image storage from local filesystem to an S3-compatible bucket (AWS S3 or MinIO)
+- [X] **Backend S3 config** — add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`, and `S3_ENDPOINT` to backend `.env` and update gallery upload/retrieval logic
+- [X] **Dockerize S3 storage** — add a [MinIO](https://min.io/) service to `compose.yml` as a local S3-compatible store for development
 - [ ] **Update `compose.yml`** — wire the MinIO container to the backend via environment variables and a shared Docker network
 - [ ] **Frontend image URLs** — update gallery components to read image URLs from S3/MinIO instead of relative paths
 

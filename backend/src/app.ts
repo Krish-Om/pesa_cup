@@ -1,13 +1,16 @@
 import express from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import { LOCAL_UPLOAD_DIRECTORY } from "./utils/local-storage";
 
 import fixtures from "./modules/fixtures/fixtures.routes";
 import standings from "./modules/standings/standings.routes";
 import scorers from "./modules/scorers/scorers.routes";
 import gallery from "./modules/gallery/gallery.routes";
 import contacts from "./modules/contact/contacts.routes";
-import tournament from "./modules/tournament/tournament.routes";
+import tournament, {
+  tournamentsRouter,
+} from "./modules/tournament/tournament.routes";
 
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler";
 import { logger } from "./utils/logger"; // Importing standalone Pino logger instance
@@ -19,6 +22,7 @@ app.use(pinoHttp({ logger }));
 
 // 2. Body Parser Middleware
 app.use(express.json());
+app.use("/uploads", express.static(LOCAL_UPLOAD_DIRECTORY));
 
 // 3. CORS Configuration
 const ALLOWED_ORIGIN_ENV = process.env.ALLOWED_ORIGINS;
@@ -45,8 +49,9 @@ app.use("/api/v1/fixtures", fixtures);
 app.use("/api/v1/contacts", contacts);
 app.use("/api/v1/standings", standings);
 app.use("/api/v1/gallery", gallery);
-// app.use("/api/v1/scorers", scorers);
-// app.use("/api/v1/tournament", tournament);
+app.use("/api/v1/scorers", scorers);
+app.use("/api/v1/tournament", tournament);
+app.use("/api/v1/tournaments", tournamentsRouter);
 
 // Global Error Handlers
 app.use(notFoundHandler);
