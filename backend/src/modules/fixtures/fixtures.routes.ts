@@ -5,6 +5,7 @@ import {
   apiReadLimiter,
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
+import { requireAdmin } from "../../middlewares/auth";
 const fixtures = express.Router();
 
 fixtures.get(
@@ -17,6 +18,8 @@ fixtures.get(
   apiReadLimiter,
   asyncHandler(fixturesController.getFixtureById),
 );
+
+fixtures.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 fixtures.post(
   "/",
   contactFormLimiter,
