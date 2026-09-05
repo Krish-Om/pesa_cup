@@ -4,24 +4,32 @@ import { scorers, type DBInput, type DBReturnType } from "./scorers.schema";
 
 export class ScorersRepository {
   async getAllScorers(): Promise<DBReturnType[]> {
-    return dbSession
-      .select()
-      .from(scorers)
-      .orderBy(desc(scorers.goals), desc(scorers.assists))
-      .all();
+    const rows = await dbSession.query.scorers.findMany({
+      orderBy: (table, { desc: orderDesc }) => [
+        orderDesc(table.goals),
+        orderDesc(table.assists),
+      ],
+      with: { team: true, tournament: true },
+    });
+    return rows.map((row) => ({
+      ...row,
+      teamName: row.team.name,
+    })) as DBReturnType[];
   }
 
   async getScorerById(id: number): Promise<DBReturnType | null> {
-    const [result] = await dbSession
-      .select()
-      .from(scorers)
-      .where(eq(scorers.id, id));
-    return result ?? null;
+    const result = await dbSession.query.scorers.findFirst({
+      where: (table, operators) => operators.eq(table.id, id),
+      with: { team: true, tournament: true },
+    });
+    return result
+      ? ({ ...result, teamName: result.team.name } as DBReturnType)
+      : null;
   }
 
   async createScorer(data: DBInput): Promise<DBReturnType | null> {
     const [result] = await dbSession.insert(scorers).values(data).returning();
-    return result ?? null;
+    return result ? await this.getScorerById(result.id) : null;
   }
 
   async updateScorer(
@@ -33,7 +41,7 @@ export class ScorersRepository {
       .set(data)
       .where(eq(scorers.id, id))
       .returning();
-    return result ?? null;
+    return result ? await this.getScorerById(result.id) : null;
   }
 
   async deleteScorer(id: number): Promise<DBReturnType | null> {

@@ -5,6 +5,7 @@ import {
   apiReadLimiter,
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
+import { requireAdmin } from "../../middlewares/auth.ts";
 
 const contacts = express.Router();
 
@@ -13,6 +14,6 @@ contacts.post(
   contactFormLimiter,
   asyncHandler(contactsController.createContact),
 );
-contacts.get("/", apiReadLimiter, asyncHandler(contactsController.getContacts));
+contacts.get("/", apiReadLimiter,requireAdmin, asyncHandler(contactsController.getContacts));
 
 export default contacts;

@@ -5,6 +5,7 @@ import {
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
 import tournamentController from "./tournament.controller";
+import { requireAdmin } from "../../middlewares/auth";
 
 const tournament = express.Router();
 const tournaments = express.Router();
@@ -20,6 +21,8 @@ tournaments.get(
   apiReadLimiter,
   asyncHandler(tournamentController.getById),
 );
+
+tournaments.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 tournaments.post(
   "/",
   contactFormLimiter,

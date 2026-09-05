@@ -38,7 +38,7 @@ export class StandingsService {
     try {
       logger.debug("Fetching standingById...");
       const data = await this.repo.getStandingsById(id);
-      result = (data ?? []) as Standings;
+      result = data ?? null;
     } catch (err) {
       logger.error({ err, id }, `Standings with id ${id} not found`);
       throw err;

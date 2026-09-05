@@ -1,4 +1,5 @@
-import { sqliteTable, integer, text, uniqueIndex } from "drizzle-orm/sqlite-core"
+import { sqliteTable, AnySQLiteColumn, integer, text, foreignKey, uniqueIndex } from "drizzle-orm/sqlite-core"
+  import { sql } from "drizzle-orm"
 
 export const contactMessages = sqliteTable("contact_messages", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
@@ -12,14 +13,15 @@ export const contactMessages = sqliteTable("contact_messages", {
 
 export const fixtures = sqliteTable("fixtures", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	teamA: text("team_a").notNull(),
-	teamB: text("team_b").notNull(),
 	date: text().notNull(),
 	time: text().notNull(),
 	venue: text().notNull(),
 	status: text().default("upcoming").notNull(),
 	scoreA: integer("score_a"),
 	scoreB: integer("score_b"),
+	homeTeamId: integer("home_team_id").notNull().references(() => teams.id),
+	awayTeamId: integer("away_team_id").notNull().references(() => teams.id),
+	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id),
 });
 
 export const galleryCategories = sqliteTable("gallery_categories", {
@@ -53,34 +55,6 @@ export const galleryPhotos = sqliteTable("gallery_photos", {
 	createdAt: integer("created_at").notNull(),
 });
 
-export const scorers = sqliteTable("scorers", {
-	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	playerName: text("player_name").notNull(),
-	teamName: text("team_name").notNull(),
-	tournamentId: integer("tournament_id").references(() => tournaments.id),
-	goals: integer().default(0).notNull(),
-	assists: integer().default(0).notNull(),
-	rank: integer(),
-	avatar: text(),
-	createdAt: text("created_at").default("sql`(CURRENT_TIMESTAMP)`").notNull(),
-});
-
-export const standings = sqliteTable("standings", {
-	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	team: text().notNull(),
-	group: text().notNull(),
-	played: integer().default(0).notNull(),
-	won: integer().default(0).notNull(),
-	draw: integer().default(0).notNull(),
-	lost: integer().default(0).notNull(),
-	goalFor: integer("goal_for").default(0).notNull(),
-	goalAgainst: integer("goal_against").default(0).notNull(),
-	goalDifference: integer("goal_difference").default(0).notNull(),
-	points: integer().default(0).notNull(),
-	position: integer(),
-	createdAt: text("created_at").default("sql`(CURRENT_TIMESTAMP)`").notNull(),
-});
-
 export const tournaments = sqliteTable("tournaments", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
 	name: text().notNull(),
@@ -95,4 +69,58 @@ export const tournaments = sqliteTable("tournaments", {
 (table) => [
 	uniqueIndex("tournaments_slug_unique").on(table.slug),
 ]);
+
+export const registrations = sqliteTable("registrations", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id, { onDelete: "cascade" } ),
+	teamName: text("team_name").notNull(),
+	captainName: text("captain_name").notNull(),
+	captainEmail: text("captain_email").notNull(),
+	captainPhone: text("captain_phone").notNull(),
+	playerCount: integer("player_count").notNull(),
+	paymentReceiptUrl: text("payment_receipt_url"),
+	status: text().default("PENDING").notNull(),
+	rejectionReason: text("rejection_reason"),
+	teamId: integer("team_id").references(() => teams.id, { onDelete: "set null" } ),
+	createdAt: integer("created_at").notNull(),
+});
+
+export const teams = sqliteTable("teams", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	name: text().notNull(),
+	logo: text(),
+	captainName: text("captain_name").notNull(),
+	captainEmail: text("captain_email").notNull(),
+	captainPhone: text("captain_phone").notNull(),
+	createdAt: integer("created_at").notNull(),
+});
+
+export const scorers = sqliteTable("scorers", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	playerName: text("player_name").notNull(),
+	teamId: integer("team_id").notNull().references(() => teams.id, { onDelete: "cascade" } ),
+	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id, { onDelete: "cascade" } ),
+	goals: integer().default(0).notNull(),
+	assists: integer().default(0).notNull(),
+	rank: integer(),
+	avatar: text(),
+	createdAt: integer("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+});
+
+export const standings = sqliteTable("standings", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	teamId: integer("team_id").notNull().references(() => teams.id, { onDelete: "cascade" } ),
+	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id, { onDelete: "cascade" } ),
+	group: text().notNull(),
+	played: integer().default(0).notNull(),
+	won: integer().default(0).notNull(),
+	draw: integer().default(0).notNull(),
+	lost: integer().default(0).notNull(),
+	goalFor: integer("goal_for").default(0).notNull(),
+	goalAgainst: integer("goal_against").default(0).notNull(),
+	goalDifference: integer("goal_difference").default(0).notNull(),
+	points: integer().default(0).notNull(),
+	position: integer(),
+	createdAt: integer("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+});
 
