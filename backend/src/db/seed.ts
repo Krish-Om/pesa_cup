@@ -69,27 +69,29 @@ async function seed() {
   if (!currentTournament || !completedTournament)
     throw new Error("Failed to seed tournaments");
 
+  // Fix team inserts inside seed.ts
   const seededTeams = await dbSession
     .insert(teams)
     .values(
       ["CSIT Strikers", "BCA Warriors", "BBA Lions", "BIM United"].map(
-        (name) => ({
+        (name, idx) => ({
           name,
           captainName: `${name} Captain`,
           captainEmail: `${name.toLowerCase().replaceAll(" ", ".")}@example.com`,
           captainPhone: "9800000000",
+          batchYear: `202${idx + 1}`, // Added batchYear
         }),
       ),
     )
     .returning();
   const team = Object.fromEntries(
     seededTeams.map((item) => [item.name, item.id]),
-  );
+  ) as Record<string, number>;
 
   await dbSession.insert(scorers).values([
     {
       playerName: "Rohan KC",
-      teamId: team["CSIT Strikers"],
+      teamId: team["CSIT Strikers"]!,
       tournamentId: currentTournament.id,
       goals: 8,
       assists: 3,
@@ -98,7 +100,7 @@ async function seed() {
     },
     {
       playerName: "Bishal Thapa",
-      teamId: team["BCA Warriors"],
+      teamId: team["BCA Warriors"]!,
       tournamentId: currentTournament.id,
       goals: 6,
       assists: 5,
@@ -107,7 +109,7 @@ async function seed() {
     },
     {
       playerName: "Anish Maharjan",
-      teamId: team["BBA Lions"],
+      teamId: team["BBA Lions"]!,
       tournamentId: completedTournament.id,
       goals: 11,
       assists: 2,
@@ -115,26 +117,27 @@ async function seed() {
       avatar: "/uploads/avatars/anish.webp",
     },
   ]);
+
   await dbSession.insert(fixtures).values([
     {
-      homeTeamId: team["CSIT Strikers"],
-      awayTeamId: team["BCA Warriors"],
+      homeTeamId: team["CSIT Strikers"]!,
+      awayTeamId: team["BCA Warriors"]!,
       tournamentId: currentTournament.id,
       date: "2026-10-01",
       time: "10:00 AM",
       venue: "Court A",
     },
     {
-      homeTeamId: team["BBA Lions"],
-      awayTeamId: team["BIM United"],
+      homeTeamId: team["BBA Lions"]!,
+      awayTeamId: team["BIM United"]!,
       tournamentId: currentTournament.id,
       date: "2026-10-01",
       time: "11:30 AM",
       venue: "Court B",
     },
     {
-      homeTeamId: team["CSIT Strikers"],
-      awayTeamId: team["BBA Lions"],
+      homeTeamId: team["CSIT Strikers"]!,
+      awayTeamId: team["BBA Lions"]!,
       tournamentId: completedTournament.id,
       date: "2026-08-15",
       time: "02:00 PM",
@@ -144,9 +147,9 @@ async function seed() {
       scoreB: 2,
     },
   ]);
-  await dbSession.insert(standings).values([
-    {
-      teamId: team["CSIT Strikers"],
+
+  await dbSession.insert(standings).values({
+      teamId: team["CSIT Strikers"]!,
       tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
@@ -156,9 +159,9 @@ async function seed() {
       goalDifference: 7,
       points: 9,
       position: 1,
-    },
-    {
-      teamId: team["BCA Warriors"],
+    });
+  await dbSession.insert(standings).values({
+      teamId: team["BCA Warriors"]!,
       tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
@@ -169,9 +172,9 @@ async function seed() {
       goalDifference: 2,
       points: 6,
       position: 2,
-    },
-    {
-      teamId: team["BBA Lions"],
+    });
+  await dbSession.insert(standings).values({
+      teamId: team["BBA Lions"]!,
       tournamentId: currentTournament.id,
       group: "Group A",
       played: 3,
@@ -182,20 +185,24 @@ async function seed() {
       goalDifference: -2,
       points: 3,
       position: 3,
-    },
-  ]);
-  await dbSession
-    .insert(registrations)
-    .values({
-      tournamentId: currentTournament.id,
-      teamName: "Pesa Cup Newcomers",
-      captainName: "Nabin Rai",
-      captainEmail: "nabin@example.com",
-      captainPhone: "9811111111",
-      playerCount: 8,
-      status: "PENDING",
-      teamId: null,
     });
+
+  // Updated with required batch and eSewa fields
+  await dbSession.insert(registrations).values({
+    tournamentId: currentTournament.id,
+    teamName: "Pesa Cup Newcomers",
+    captainName: "Nabin Rai",
+    captainEmail: "nabin@example.com",
+    captainPhone: "9811111111",
+    playerCount: 8,
+    batchYear: "2023",
+    paymentMethod: "ESEWA",
+    transactionUuid: "pesa-cup-seed-reg-001",
+    transactionCode: "0000XYZ",
+    amountPaid: 1500,
+    status: "PENDING",
+    teamId: null,
+  });
 
   const [opening, matchday] = await dbSession
     .insert(galleryCategories)

@@ -8,6 +8,12 @@ const registrationsController = {
   create: async (req: Request, res: Response): Promise<void> => {
     res.status(201).json(await registrationsService.create(req.body));
   },
+  initiatePayment: async (req: Request, res: Response): Promise<void> => {
+    res.status(200).json(registrationsService.initiatePayment(req.body));
+  },
+  verifyPayment: async (req: Request, res: Response): Promise<void> => {
+    res.status(201).json(await registrationsService.verifyPayment(req.body));
+  },
   getAll: async (req: Request, res: Response): Promise<void> => {
     res.status(200).json(await registrationsService.getAll());
   },

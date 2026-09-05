@@ -14,6 +14,16 @@ registrations.post(
   contactFormLimiter,
   asyncHandler(registrationsController.create),
 );
+registrations.post(
+  "/initiate-payment",
+  contactFormLimiter,
+  asyncHandler(registrationsController.initiatePayment),
+);
+registrations.post(
+  "/verify-payment",
+  contactFormLimiter,
+  asyncHandler(registrationsController.verifyPayment),
+);
 registrations.get(
   "/",
   apiReadLimiter,

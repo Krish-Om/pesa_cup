@@ -24,6 +24,16 @@ export class RegistrationsRepository {
     return result ?? null;
   }
 
+  async getByTransactionUuid(
+    transactionUuid: string,
+  ): Promise<Registration | null> {
+    const [result] = await dbSession
+      .select()
+      .from(registrations)
+      .where(eq(registrations.transactionUuid, transactionUuid));
+    return result ?? null;
+  }
+
   async getAll(): Promise<Registration[]> {
     return dbSession.select().from(registrations).all();
   }
