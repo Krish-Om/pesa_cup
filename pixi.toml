@@ -9,4 +9,6 @@ version = "0.1.0"
 dev-backend = {cmd = "bun run dev",cwd ="backend"}
 dev-frontend = {cmd = "bun run dev",cwd="frontend"}
 dev = "pixi run dev-backend & pixi run dev-frontend && wait"
+resetdb = {cmd = "rm -rf data/* && rm -rf backend/drizzle/"}
+initdb = {cmd="bun run db:generate && bun run db:migrate && bun run db:seed",cwd="backend"}
 [dependencies]
