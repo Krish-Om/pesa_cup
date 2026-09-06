@@ -54,13 +54,12 @@ export const registrations = sqliteTable(
     batchYear: text("batch_year").notNull(), // e.g., "2020" or "Batch 2078"
 
     // Payment Details
-    paymentMethod: text("payment_method").default("ESEWA").notNull(),
-    transactionUuid: text("transaction_uuid").notNull(),
     transactionCode: text("transaction_code"),
-    amountPaid: integer("amount_paid").notNull(),
-    paymentReceiptUrl: text("payment_receipt_url"),
+    paymentReceiptUrl: text("payment_receipt_url").notNull(),
 
-    status: text().default("PENDING").notNull(),
+    status: text("status", { enum: ["PENDING", "APPROVED", "REJECTED"] })
+      .default("PENDING")
+      .notNull(),
     rejectionReason: text("rejection_reason"),
     teamId: integer("team_id").references(() => teams.id, {
       onDelete: "set null",
@@ -69,11 +68,7 @@ export const registrations = sqliteTable(
       .notNull()
       .$defaultFn(() => new Date()),
   },
-  (table) => [
-    uniqueIndex("registrations_transaction_uuid_unique").on(
-      table.transactionUuid,
-    ),
-  ],
+
 );
 
 export const fixtures = sqliteTable("fixtures", {

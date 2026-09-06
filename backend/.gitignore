@@ -50,3 +50,6 @@ data/
 # Drizzle Kit meta (keep SQL migrations, ignore kit state if using push)
 # Note: Un-comment .drizzle if you only use 'drizzle-kit push' and don't track migrations in Git
 # .drizzle/
+
+# Uploaded media (payment receipts, gallery, misc)
+uploads/

@@ -55,26 +55,6 @@ export const galleryPhotos = sqliteTable("gallery_photos", {
 	createdAt: integer("created_at").notNull(),
 });
 
-export const registrations = sqliteTable("registrations", {
-	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id, { onDelete: "cascade" } ),
-	teamName: text("team_name").notNull(),
-	captainName: text("captain_name").notNull(),
-	captainEmail: text("captain_email").notNull(),
-	captainPhone: text("captain_phone").notNull(),
-	playerCount: integer("player_count").notNull(),
-	batchYear: text("batch_year").notNull(),
-	paymentMethod: text("payment_method").default("ESEWA").notNull(),
-	transactionUuid: text("transaction_uuid").notNull(),
-	transactionCode: text("transaction_code"),
-	amountPaid: integer("amount_paid").notNull(),
-	paymentReceiptUrl: text("payment_receipt_url"),
-	status: text().default("PENDING").notNull(),
-	rejectionReason: text("rejection_reason"),
-	teamId: integer("team_id").references(() => teams.id, { onDelete: "set null" } ),
-	createdAt: integer("created_at").notNull(),
-});
-
 export const scorers = sqliteTable("scorers", {
 	id: integer().primaryKey({ autoIncrement: true }).notNull(),
 	playerName: text("player_name").notNull(),
@@ -129,4 +109,21 @@ export const tournaments = sqliteTable("tournaments", {
 (table) => [
 	uniqueIndex("tournaments_slug_unique").on(table.slug),
 ]);
+
+export const registrations = sqliteTable("registrations", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	tournamentId: integer("tournament_id").notNull().references(() => tournaments.id, { onDelete: "cascade" } ),
+	teamName: text("team_name").notNull(),
+	captainName: text("captain_name").notNull(),
+	captainEmail: text("captain_email").notNull(),
+	captainPhone: text("captain_phone").notNull(),
+	playerCount: integer("player_count").notNull(),
+	batchYear: text("batch_year").notNull(),
+	transactionCode: text("transaction_code"),
+	paymentReceiptUrl: text("payment_receipt_url").notNull(),
+	status: text().default("PENDING").notNull(),
+	rejectionReason: text("rejection_reason"),
+	teamId: integer("team_id").references(() => teams.id, { onDelete: "set null" } ),
+	createdAt: integer("created_at").notNull(),
+});
 

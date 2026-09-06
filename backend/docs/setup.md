@@ -9,43 +9,53 @@ NODE_ENV=development
 PORT=3000
 DATABASE_PATH=./data/pesa_cup.sqlite
 UPLOAD_DIR=./uploads
+APP_URL=http://localhost:3000
 ALLOWED_ORIGINS=http://localhost:5173
 ADMIN_API_KEY=replace-this-for-admin-routes
-ESEWA_ENV=sandbox
-ESEWA_PRODUCT_CODE=EPAYTEST
-ESEWA_SECRET_KEY=replace-this-with-the-eSewa-secret
-ESEWA_REGISTRATION_AMOUNT=1500
-ESEWA_SUCCESS_URL=http://localhost:5173/payment/success
-ESEWA_FAILURE_URL=http://localhost:5173/payment/failure
 ```
 
-The development database defaults to `data/pesa_cup_futsal_dev.db`. In other environments, `DATABASE_PATH` controls the SQLite file. `PORT` defaults to `3000`; `UPLOAD_DIR` defaults to `uploads`.
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PORT` | `3000` | HTTP server port |
+| `NODE_ENV` | — | `development` uses `pesa_cup_dev.sqlite`; anything else uses `DATABASE_PATH` |
+| `DATABASE_PATH` | `./pesa_cup_prod.sqlite` | SQLite file path (non-development only) |
+| `UPLOAD_DIR` | `./uploads` | Root directory for all uploaded files. Subdirectories `receipts/`, `gallery/`, and `misc/` are created automatically on startup. |
+| `APP_URL` | derived from request | Base URL prepended to upload paths in API responses when an absolute URL is needed. |
+| `ALLOWED_ORIGINS` | `http://localhost:3000,http://localhost:5173` | Comma-separated list of allowed CORS origins. Set to `*` to allow all. |
+| `ADMIN_API_KEY` | — | Bearer token required for all admin routes and the `/uploads/receipts` static path. |
 
-`JWT_SECRET`, `JWT_KEY_EXPIRY`, and `DATABASE_URL` may appear in older environment examples, but they are not used by the current source code.
+## Upload Directory Layout
 
-For payments, use `ESEWA_ENV=sandbox` during development. Never expose `ESEWA_SECRET_KEY` to the frontend. The registration amount is an integer in the configured currency unit and is always taken from `ESEWA_REGISTRATION_AMOUNT`.
+```
+$UPLOAD_DIR/          (default: ./uploads)
+├── receipts/         payment receipt screenshots (admin-read-only)
+├── gallery/          tournament photos and media (public)
+└── misc/             catch-all (public)
+```
+
+All subdirectories are created by `src/utils/local-storage.ts` at server startup. They do not need to be created manually.
 
 ## Database
 
-The server applies migrations from `backend/drizzle` before listening. Use these commands from `backend/`:
+The server applies Drizzle migrations before listening. Run these commands from `backend/`:
 
 ```bash
-bun run db:generate
-bun run db:migrate
-bun run db:studio
-bun run db:seed
+bun run db:generate   # generate a new migration from schema changes
+bun run db:migrate    # apply pending migrations
+bun run db:studio     # open Drizzle Studio (browser-based DB viewer)
+bun run db:seed       # clear and re-seed development data
 ```
 
-Seeding clears existing records in foreign-key order and inserts development data. Do not run it against production data.
+Seeding clears existing records in foreign-key order and inserts development fixtures, standings, scorers, gallery categories, and one sample pending registration. Do not run it against production data.
 
 ## Testing and Build
 
 ```bash
-bun test
-bun run build
+bun test        # run unit tests
+bun run build   # bundle to ./dist
 ```
 
-Tests are isolated unit tests and do not start the server or intentionally use the development database.
+Tests are isolated unit tests. They do not start the server or use the development database.
 
 ## Docker
 
@@ -54,4 +64,12 @@ docker build -t pesa-cup-backend .
 docker run -p 3000:3000 --env-file .env pesa-cup-backend
 ```
 
-Mount persistent storage for the SQLite database and uploads when running the container beyond local development.
+Mount persistent storage for the SQLite database and uploads when running beyond local development:
+
+```bash
+docker run -p 3000:3000 \
+  --env-file .env \
+  -v /data/pesa_cup:/data \
+  -v /data/uploads:/uploads \
+  pesa-cup-backend
+```

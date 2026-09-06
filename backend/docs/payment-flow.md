@@ -1,37 +1,92 @@
 # Payment Flow
 
-## 1. Initiation
+The registration payment flow uses static merchant QR codes and manual receipt upload. There is no automated gateway redirect or server-side payment verification.
 
-`POST /api/v1/registrations/initiate-payment`
+## Steps
 
-The user fills out the registration form on your site, including the team name, captain information, and batch year.
+### 1. Fill in Team Details
 
-Before taking any money, the frontend calls your server. The server generates a unique `transactionUuid` (for example, `pesa-cup-1725518232`) and calculates an HMAC-SHA256 signature using `ESEWA_SECRET_KEY`. The server sends this signed payload back to the frontend.
+The user opens `/register` and completes the team registration form:
 
-## 2. Redirect to the eSewa Gateway
+- Team name
+- Captain name, email, and phone
+- Number of players
+- Alumni batch year
 
-The frontend receives the signature and automatically submits a POST form to the eSewa payment portal:
+### 2. Scan QR Code and Pay
 
-<https://rc-epay.esewa.com.np/api/epay/main/v2/form>
+The registration page displays static eSewa and Fonepay merchant QR codes side by side. The user scans the appropriate QR code with their payment app and completes the transfer.
 
-Because the parameters are cryptographically signed by the backend key, eSewa knows that the payment amount and merchant details cannot be tampered with by the user.
+### 3. Upload Payment Receipt
 
-## 3. Payment Execution
+After payment, the user screenshots the confirmation screen in their payment app and uploads it using the dropzone on the registration page.
 
-The user logs into eSewa and completes the payment. Once successful, eSewa redirects the user back to the frontend's `success_url` with an encoded Base64 string in the URL parameters containing the payment result.
+**Upload endpoint:** `POST /api/v1/registrations/upload-receipt`  
+**Content-Type:** `multipart/form-data`, field name `receipt`  
+**Accepted:** PNG, JPEG, WebP — maximum 5 MB  
+**Response:**
 
-## 4. Server-Side Verification
+```json
+{ "url": "/uploads/receipts/receipt-1725518232-483920183.jpg" }
+```
 
-`POST /api/v1/registrations/verify-payment`
+The file is written to `uploads/receipts/` by Multer diskStorage before the controller runs. The controller reads `req.file.filename`, builds the relative path with `getUploadUrl("receipts", filename)`, and returns it. No image conversion is applied to receipts.
 
-The frontend extracts the Base64 response and sends it, along with the complete registration form details, to the backend.
+The `/uploads/receipts/*` static route is protected by `requireAdmin`, so the stored file is not publicly accessible via browser URL. The admin reviews it through an authenticated request.
 
-The backend calls eSewa's Status Check API directly at `/api/epay/transaction/status/` to verify that:
+### 4. Submit Registration
 
-- The payment status is `COMPLETE`.
-- The `total_amount` paid matches the registration fee.
-- The `transaction_uuid` exists and has not been reused.
+The frontend posts the completed payload to `POST /api/v1/registrations`:
 
-## 5. Database Record Creation
+```json
+{
+  "tournamentId": 1,
+  "teamName": "CSIT Strikers",
+  "captainName": "Rohan KC",
+  "captainEmail": "rohan@example.com",
+  "captainPhone": "9800000001",
+  "playerCount": 7,
+  "batchYear": "2021",
+  "paymentReceiptUrl": "/uploads/receipts/receipt-1725518232-483920183.jpg",
+  "transactionCode": "ABC123XYZ"
+}
+```
 
-Once eSewa confirms the payment server-side, the backend inserts a new record into the `registrations` table with status `PENDING`, saving the `transactionUuid` and `transactionCode`. When an admin later reviews and approves the registration, the server creates the official team record inside a database transaction.
+`transactionCode` is optional — it is the transaction reference copied from the payment app.
+
+The backend validates the payload with `insertRegistrationSchema` (Zod), sets `status: "PENDING"`, and inserts the row. A `201 Created` response is returned.
+
+The frontend replaces the form with a confirmation view showing the team name, captain, and batch year, along with a "Pending Approval" status badge.
+
+### 5. Admin Approval
+
+An admin reviews the registration and the uploaded receipt at `GET /api/v1/registrations` (admin only), then approves it via `PATCH /api/v1/registrations/:id/approve`.
+
+The approval runs as a single database transaction:
+
+1. Inserts a row into `teams` using the registration details.
+2. Updates the registration to `status: "APPROVED"` and links `teamId`.
+3. Inserts a `standings` row for the new team.
+
+If any step fails, the transaction rolls back.
+
+## QR Code Setup
+
+Place static QR code images in `frontend/public/qr/`:
+
+- `frontend/public/qr/esewa-qr.png`
+- `frontend/public/qr/fonepay-qr.png`
+
+Then uncomment the `<img>` tags in `src/pages/Registration.jsx` inside the two `.qr-placeholder` divs.
+
+## Receipt Confidentiality
+
+Because receipts contain payment screenshots, the `/uploads/receipts/*` static path requires an admin Bearer token. The admin UI must fetch receipt images using:
+
+```js
+fetch("/uploads/receipts/receipt-1725518232-483920183.jpg", {
+  headers: { Authorization: `Bearer ${ADMIN_API_KEY}` },
+});
+```
+
+Once S3 is introduced (see project TODO), receipts will be stored in a private bucket and accessed via pre-signed URLs with a short TTL.
