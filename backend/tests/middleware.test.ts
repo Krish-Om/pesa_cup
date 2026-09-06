@@ -107,7 +107,8 @@ describe("error middleware", () => {
       message: "Validation failed",
     });
     expect(
-      (validation.body as { errors: Array<{ field: string }> }).errors[0].field,
+      (validation.body as { errors: Array<{ field: string }> }).errors?.[0]
+        ?.field,
     ).toBe("email");
 
     const application = response();

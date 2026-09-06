@@ -24,18 +24,21 @@ export class RegistrationsRepository {
     return result ?? null;
   }
 
-  async getByTransactionUuid(
-    transactionUuid: string,
-  ): Promise<Registration | null> {
-    const [result] = await dbSession
-      .select()
-      .from(registrations)
-      .where(eq(registrations.transactionUuid, transactionUuid));
-    return result ?? null;
-  }
-
   async getAll(): Promise<Registration[]> {
     return dbSession.select().from(registrations).all();
+  }
+
+  async update(
+    id: number,
+    data: Partial<RegistrationPayload>,
+  ): Promise<Registration> {
+    const [result] = await dbSession
+      .update(registrations)
+      .set(data)
+      .where(eq(registrations.id, id))
+      .returning();
+    if (!result) throw new Error("Failed to update registration");
+    return result;
   }
 }
 

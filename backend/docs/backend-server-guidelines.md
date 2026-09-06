@@ -55,20 +55,16 @@ If the app grows, version the API from the beginning so frontend changes do not 
 ```text
 backend/
   docs/
-    backend-server-guidelines.md
   src/
     app.ts
     server.ts
     config/
-      env.ts
-      cors.ts
-      logger.ts
       database.ts
     middlewares/
+      auth.ts
       error-handler.ts
-      not-found.ts
-      request-logger.ts
-      validate-request.ts
+      rate-limiter.ts
+      upload.ts          ← central Multer diskStorage config (receipts, gallery)
     modules/
       fixtures/
         fixtures.routes.ts
@@ -77,37 +73,34 @@ backend/
         fixtures.repository.ts
         fixtures.schema.ts
       standings/
-        standings.routes.ts
-        standings.controller.ts
-        standings.service.ts
-        standings.repository.ts
-        standings.schema.ts
       scorers/
-        scorers.routes.ts
-        scorers.controller.ts
-        scorers.service.ts
-        scorers.repository.ts
-        scorers.schema.ts
       gallery/
         gallery.routes.ts
         gallery.controller.ts
-        gallery.service.ts
+        gallery.service.ts   ← sharp WebP post-processing after diskStorage write
         gallery.repository.ts
         gallery.schema.ts
+      registrations/
+        registrations.routes.ts
+        registrations.controller.ts
+        registrations.service.ts
+        registrations.repository.ts
+        registrations.schema.ts
       contact/
-        contact.routes.ts
-        contact.controller.ts
-        contact.service.ts
-        contact.repository.ts
-        contact.schema.ts
       tournament/
-        tournament.routes.ts
-        tournament.controller.ts
-        tournament.service.ts
-    types/
     utils/
+      app-error.ts
+      local-storage.ts     ← BASE_UPLOAD_DIR, UPLOAD_SUBDIRS, getUploadUrl, saveLocalFile
+      logger.ts
     db/
-    tests/
+      schema.ts
+      seed.ts
+      migrate.ts
+  drizzle/                 ← generated migration SQL files
+  uploads/                 ← runtime upload root (gitignored)
+    receipts/              admin-only
+    gallery/               public
+    misc/                  public
 ```
 
 ## 6. Layer Responsibilities
@@ -165,12 +158,13 @@ Model the backend around the tournament domain rather than around pages.
 
 Keep runtime config outside the codebase.
 
-- `PORT`
-- `NODE_ENV`
-- `CORS_ORIGIN`
-- `DATABASE_URL`
-- `JWT_SECRET` if auth is added later
-- `UPLOAD_DIR` if gallery uploads are supported later
+- `PORT` — HTTP server port (default: `3000`)
+- `NODE_ENV` — controls which SQLite file is used (`development` → dev file, otherwise `DATABASE_PATH`)
+- `DATABASE_PATH` — SQLite file path for non-development environments
+- `UPLOAD_DIR` — root upload directory; subdirectories are created automatically (default: `./uploads`)
+- `APP_URL` — base URL for constructing absolute links when needed (e.g. `http://localhost:3000`)
+- `ALLOWED_ORIGINS` — comma-separated CORS origins, or `*` for all
+- `ADMIN_API_KEY` — Bearer token for all admin API routes and the `/uploads/receipts` static path
 
 Use one env loader and fail fast when required values are missing.
 

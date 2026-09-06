@@ -79,15 +79,15 @@ describe("module schemas", () => {
       captainPhone: "9812345678",
       playerCount: 8,
       batchYear: "2026",
-      transactionUuid: "txn-1",
-      amountPaid: 5000,
+      paymentReceiptUrl: "/uploads/receipts/test.png",
+      transactionCode: "txn-1",
     };
     expect(insertRegistrationSchema.parse(payload)).toMatchObject({
-      paymentMethod: "ESEWA",
+      paymentReceiptUrl: "/uploads/receipts/test.png",
       status: "PENDING",
     });
     expect(() =>
-      insertRegistrationSchema.parse({ ...payload, amountPaid: 0 }),
+      insertRegistrationSchema.parse({ ...payload, paymentReceiptUrl: "" }),
     ).toThrow();
     expect(() =>
       insertRegistrationSchema.parse({ ...payload, captainEmail: "invalid" }),

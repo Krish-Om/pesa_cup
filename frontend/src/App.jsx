@@ -7,6 +7,7 @@ import StandingsSection from './components/Standings';
 import Gallery from './components/Gallery';
 import GalleryPages from './pages/GalleryPages';
 import Contact from './pages/Contact';
+import Registration from './pages/Registration';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/gallery/:categoryId" element={<GalleryPages />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/register" element={<Registration />} />
       </Routes>
     </BrowserRouter>
   );

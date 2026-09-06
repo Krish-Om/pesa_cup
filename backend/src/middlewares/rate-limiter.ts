@@ -3,12 +3,27 @@ import rateLimit from "express-rate-limit";
 // Strict limiter for POST endpoints susceptible to spam
 export const contactFormLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 5, // Max 5 submissions per IP per 15 mins
+  limit: 10, // Max 10 submissions per IP per 15 mins
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
     message: "Too many contact requests submitted. Please try again later.",
+    errors: [],
+  },
+});
+
+// Dedicated limiter for public registration submission endpoints.
+// Isolated from contactFormLimiter so registration traffic never shares
+// a rate-limit bucket with unrelated public/admin write routes.
+export const registrationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 10, // Max 10 submissions per IP per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many registration requests submitted. Please try again later.",
     errors: [],
   },
 });

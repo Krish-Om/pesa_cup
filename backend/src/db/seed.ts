@@ -187,7 +187,6 @@ async function seed() {
       position: 3,
     });
 
-  // Updated with required batch and eSewa fields
   await dbSession.insert(registrations).values({
     tournamentId: currentTournament.id,
     teamName: "Pesa Cup Newcomers",
@@ -196,10 +195,8 @@ async function seed() {
     captainPhone: "9811111111",
     playerCount: 8,
     batchYear: "2023",
-    paymentMethod: "ESEWA",
-    transactionUuid: "pesa-cup-seed-reg-001",
+    paymentReceiptUrl: "https://example.com/receipts/seed-receipt-001.jpg",
     transactionCode: "0000XYZ",
-    amountPaid: 1500,
     status: "PENDING",
     teamId: null,
   });

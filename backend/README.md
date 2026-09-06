@@ -7,6 +7,7 @@ REST API for the Pesa Cup tournament platform. The backend uses Bun, TypeScript,
 - [API reference](docs/api.md)
 - [Setup and operations](docs/setup.md)
 - [Payment flow](docs/payment-flow.md)
+- [Backend TODO](docs/todo.md)
 - [Architecture and testing](docs/architecture-and-testing.md)
 - [Backend guidelines](docs/backend-server-guidelines.md)
 - [Backend decisions](docs/Backend-Decisions.md)

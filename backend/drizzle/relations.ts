@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tournaments, fixtures, teams, galleryCategories, galleryPhotos, registrations, scorers, standings } from "./schema";
+import { tournaments, fixtures, teams, galleryCategories, galleryPhotos, scorers, standings, registrations } from "./schema";
 
 export const fixturesRelations = relations(fixtures, ({one}) => ({
 	tournament: one(tournaments, {
@@ -20,9 +20,9 @@ export const fixturesRelations = relations(fixtures, ({one}) => ({
 
 export const tournamentsRelations = relations(tournaments, ({many}) => ({
 	fixtures: many(fixtures),
-	registrations: many(registrations),
 	scorers: many(scorers),
 	standings: many(standings),
+	registrations: many(registrations),
 }));
 
 export const teamsRelations = relations(teams, ({many}) => ({
@@ -32,9 +32,9 @@ export const teamsRelations = relations(teams, ({many}) => ({
 	fixtures_homeTeamId: many(fixtures, {
 		relationName: "fixtures_homeTeamId_teams_id"
 	}),
-	registrations: many(registrations),
 	scorers: many(scorers),
 	standings: many(standings),
+	registrations: many(registrations),
 }));
 
 export const galleryPhotosRelations = relations(galleryPhotos, ({one}) => ({
@@ -46,17 +46,6 @@ export const galleryPhotosRelations = relations(galleryPhotos, ({one}) => ({
 
 export const galleryCategoriesRelations = relations(galleryCategories, ({many}) => ({
 	galleryPhotos: many(galleryPhotos),
-}));
-
-export const registrationsRelations = relations(registrations, ({one}) => ({
-	team: one(teams, {
-		fields: [registrations.teamId],
-		references: [teams.id]
-	}),
-	tournament: one(tournaments, {
-		fields: [registrations.tournamentId],
-		references: [tournaments.id]
-	}),
 }));
 
 export const scorersRelations = relations(scorers, ({one}) => ({
@@ -78,5 +67,16 @@ export const standingsRelations = relations(standings, ({one}) => ({
 	team: one(teams, {
 		fields: [standings.teamId],
 		references: [teams.id]
+	}),
+}));
+
+export const registrationsRelations = relations(registrations, ({one}) => ({
+	team: one(teams, {
+		fields: [registrations.teamId],
+		references: [teams.id]
+	}),
+	tournament: one(tournaments, {
+		fields: [registrations.tournamentId],
+		references: [tournaments.id]
 	}),
 }));

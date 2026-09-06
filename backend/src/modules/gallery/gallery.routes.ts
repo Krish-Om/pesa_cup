@@ -1,32 +1,26 @@
 import express from "express";
-import multer from "multer";
 import { asyncHandler } from "../../middlewares/error-handler";
 import {
   apiReadLimiter,
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
+import { uploadGallery } from "../../middlewares/upload";
 import galleryController from "./gallery.controller";
 import { requireAdmin } from "../../middlewares/auth";
 
 const gallery = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
-gallery.get(
-  "/",
-  apiReadLimiter,
-  asyncHandler(galleryController.getAllGalleryItems),
-);
-gallery.get(
-  "/:id",
-  apiReadLimiter,
-  asyncHandler(galleryController.getGalleryItemById),
-);
+// Public reads
+gallery.get("/",    apiReadLimiter, asyncHandler(galleryController.getAllGalleryItems));
+gallery.get("/:id", apiReadLimiter, asyncHandler(galleryController.getGalleryItemById));
 
-gallery.use(requireAdmin); // Apply requireAdmin middleware to all routes below
+// All write operations require admin
+gallery.use(requireAdmin);
+
 gallery.post(
   "/",
   contactFormLimiter,
-  upload.single("file"),
+  uploadGallery.single("file"),
   asyncHandler(galleryController.createGalleryItem),
 );
 gallery.put(
