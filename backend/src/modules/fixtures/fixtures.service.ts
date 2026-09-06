@@ -8,6 +8,7 @@ import {
 } from "./fixture.schema";
 import { ZodError } from "zod";
 import { NotFoundError } from "../../utils/app-error";
+import { eventBus } from "../../utils/event-bus";
 
 export class FixturesService {
   constructor(private repo: FixturesRepository = fixturesRepository) {}
@@ -95,7 +96,13 @@ export class FixturesService {
         fixtureId,
         validatedPayload,
       );
-      result = (data ?? null) as Fixture | null;
+		result = (data ?? null) as Fixture | null;
+		eventBus.emit("fixture_updated", {
+			fixtureId: result?.id,
+			homescore: result?.scoreA,
+			awayscore: result?.scoreB,
+			status: result?.status,
+		})
     } catch (err) {
       // 3a. Re-throw ZodError directly to preserve schema validation details for HTTP 400
       if (err instanceof ZodError) {
