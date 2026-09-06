@@ -4,20 +4,28 @@ import { standings, type DBInput, type DBReturnType } from "./standings.schema";
 
 export class StandingsRepository {
   async getAllStandings(): Promise<DBReturnType[]> {
-    return dbSession.select().from(standings).all();
+    const rows = await dbSession.query.standings.findMany({
+      with: { team: true, tournament: true },
+    });
+    return rows.map((row) => ({
+      ...row,
+      team: row.team.name,
+    })) as DBReturnType[];
   }
 
   async getStandingsById(id: number): Promise<DBReturnType | null> {
-    const [result] = await dbSession
-      .select()
-      .from(standings)
-      .where(eq(standings.id, id));
-    return result ?? null;
+    const result = await dbSession.query.standings.findFirst({
+      where: (table, operators) => operators.eq(table.id, id),
+      with: { team: true, tournament: true },
+    });
+    return result
+      ? ({ ...result, team: result.team.name } as DBReturnType)
+      : null;
   }
 
   async createStandings(data: DBInput): Promise<DBReturnType | null> {
     const [result] = await dbSession.insert(standings).values(data).returning();
-    return result ?? null;
+    return result ? await this.getStandingsById(result.id) : null;
   }
 
   async updateStandings(
@@ -29,7 +37,7 @@ export class StandingsRepository {
       .set(data)
       .where(eq(standings.id, id))
       .returning();
-    return result ?? null;
+    return result ? await this.getStandingsById(result.id) : null;
   }
 
   async deleteStanding(id: number): Promise<DBReturnType | null> {

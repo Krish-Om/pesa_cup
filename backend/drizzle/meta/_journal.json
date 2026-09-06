@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1788416618628,
-      "tag": "0000_last_moondragon",
+      "when": 1788589034336,
+      "tag": "0000_marvelous_mongu",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788590000000,
+      "tag": "0001_unique_registration_transaction_uuid",
       "breakpoints": true
     }
   ]

@@ -1,22 +1,8 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
+import { tournaments } from "../../db/schema";
 
-export const tournaments = sqliteTable("tournaments", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  startDate: text("start_date").notNull(),
-  endDate: text("end_date").notNull(),
-  status: text("status", { enum: ["UPCOMING", "ONGOING", "COMPLETED"] })
-    .notNull()
-    .default("UPCOMING"),
-  venue: text("venue"),
-  organizer: text("organizer"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
+export { tournaments };
 
 export const insertTournamentSchema = createInsertSchema(tournaments, {
   name: z.string().min(1, "Tournament name is required").trim(),
@@ -30,8 +16,8 @@ export const insertTournamentSchema = createInsertSchema(tournaments, {
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().min(1, "End date is required"),
   status: z.enum(["UPCOMING", "ONGOING", "COMPLETED"]).default("UPCOMING"),
-  venue: z.string().optional(),
-  organizer: z.string().optional(),
+  venue: z.string().nullable().optional(),
+  organizer: z.string().nullable().optional(),
 });
 
 export const selectTournamentSchema = createSelectSchema(tournaments);

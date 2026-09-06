@@ -6,6 +6,7 @@ import {
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
 import galleryController from "./gallery.controller";
+import { requireAdmin } from "../../middlewares/auth";
 
 const gallery = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -20,6 +21,8 @@ gallery.get(
   apiReadLimiter,
   asyncHandler(galleryController.getGalleryItemById),
 );
+
+gallery.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 gallery.post(
   "/",
   contactFormLimiter,

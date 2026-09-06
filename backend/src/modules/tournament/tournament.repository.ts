@@ -12,10 +12,15 @@ export class TournamentRepository {
   }
 
   async getById(id: number): Promise<DBReturnType | null> {
-    const [result] = await dbSession
-      .select()
-      .from(tournaments)
-      .where(eq(tournaments.id, id));
+    const result = await dbSession.query.tournaments.findFirst({
+      where: (table, operators) => operators.eq(table.id, id),
+      with: {
+        registrations: { with: { team: true } },
+        fixtures: { with: { homeTeam: true, awayTeam: true } },
+        standings: { with: { team: true } },
+        scorers: { with: { team: true } },
+      },
+    });
     return result ?? null;
   }
 
@@ -49,7 +54,7 @@ export class TournamentRepository {
 
   async getTotalTeams(): Promise<number> {
     const row = client
-      .query("SELECT COUNT(DISTINCT team) AS total FROM standings")
+      .query("SELECT COUNT(DISTINCT team_id) AS total FROM standings")
       .get() as { total: number } | null;
     return row?.total ?? 0;
   }

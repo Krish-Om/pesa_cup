@@ -3,24 +3,14 @@
 // - ContactMessage: name, email, subject, message, createdAt, status
 
 import { z } from "zod";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import {
+  galleryCategories,
+  galleryMedia,
+  galleryPhotos,
+} from "../../db/schema";
 
-export const galleryMedia = sqliteTable("gallery_media", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  title: text("title").notNull(),
-  description: text("description"),
-  category: text("category").notNull().default("general"),
-  albumId: integer("album_id"),
-  mediaUrl: text("media_url").notNull(),
-  fileKey: text("file_key").notNull(),
-  mimeType: text("mime_type").notNull(),
-  fileSize: integer("file_size").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
+export { galleryCategories, galleryMedia, galleryPhotos };
 
 export const insertGalleryMediaSchema = createInsertSchema(galleryMedia, {
   title: z.string().min(1, "Title is required").trim(),
@@ -34,37 +24,6 @@ export const insertGalleryMediaSchema = createInsertSchema(galleryMedia, {
 });
 
 export const selectGalleryMediaSchema = createSelectSchema(galleryMedia);
-
-// 1. Drizzle Tables
-
-export const galleryCategories = sqliteTable("gallery_categories", {
-  id: text("id").primaryKey(),
-  label: text("label").notNull(),
-  description: text("description"),
-  coverImage: text("cover_image"),
-  photoCount: integer("photo_count").notNull().default(0),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
-
-export const galleryPhotos = sqliteTable("gallery_photos", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  categoryId: text("category_id")
-    .notNull()
-    .references(() => galleryCategories.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  caption: text("caption"),
-  imagePath: text("image_path").notNull(),
-  sortOrder: integer("sort_order"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
-
-//2. Drizzle Relations
 
 export const insertGalleryCategorySchema = createInsertSchema(
   galleryCategories,

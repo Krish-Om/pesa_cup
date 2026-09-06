@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `registrations_transaction_uuid_unique` ON `registrations` (`transaction_uuid`);

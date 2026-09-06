@@ -5,6 +5,7 @@ import {
   apiReadLimiter,
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
+import { requireAdmin } from "../../middlewares/auth";
 
 const standings = express.Router();
 
@@ -18,6 +19,8 @@ standings.get(
   apiReadLimiter,
   asyncHandler(standingsController.getStandingById),
 );
+
+standings.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 standings.post(
   "/",
   contactFormLimiter,

@@ -5,6 +5,7 @@ import {
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
 import scorersController from "./scorers.controllers";
+import { requireAdmin } from "../../middlewares/auth";
 
 const scorers = express.Router();
 
@@ -14,6 +15,8 @@ scorers.get(
   apiReadLimiter,
   asyncHandler(scorersController.getScorerById),
 );
+
+scorers.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 scorers.post(
   "/",
   contactFormLimiter,

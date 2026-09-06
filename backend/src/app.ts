@@ -8,6 +8,7 @@ import standings from "./modules/standings/standings.routes";
 import scorers from "./modules/scorers/scorers.routes";
 import gallery from "./modules/gallery/gallery.routes";
 import contacts from "./modules/contact/contacts.routes";
+import registrations from "./modules/registrations/registrations.routes";
 import tournament, {
   tournamentsRouter,
 } from "./modules/tournament/tournament.routes";
@@ -47,6 +48,7 @@ app.get("/api/v1/health", (req, res) => {
 // Module Routes
 app.use("/api/v1/fixtures", fixtures);
 app.use("/api/v1/contacts", contacts);
+app.use("/api/v1/registrations", registrations);
 app.use("/api/v1/standings", standings);
 app.use("/api/v1/gallery", gallery);
 app.use("/api/v1/scorers", scorers);

@@ -2,6 +2,7 @@ import { FixturesRepository, fixturesRepository } from "./fixtures.repository";
 import { logger } from "../../utils/logger";
 import {
   type Fixture,
+  type InsertFixtureInput,
   type InsertFixturePayload,
   insertFixtureSchema,
 } from "./fixture.schema";
@@ -55,7 +56,7 @@ export class FixturesService {
     return result;
   }
 
-  async createNewFixture(payload: InsertFixturePayload): Promise<Fixture> {
+  async createNewFixture(payload: InsertFixtureInput): Promise<Fixture> {
     logger.debug({ payload }, "Creating new fixture...");
     let result: Fixture | null = null;
     try {
@@ -80,7 +81,7 @@ export class FixturesService {
 
   async updateFixture(
     fixtureId: number,
-    updatedData: Partial<InsertFixturePayload>,
+    updatedData: Partial<InsertFixtureInput>,
   ): Promise<Fixture> {
     logger.debug({ fixtureId, updatedData }, `Updating Fixture ${fixtureId}`);
     let result: Fixture | null = null;
