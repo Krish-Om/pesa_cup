@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Live Test</title>
+</head>
+<body>
+    <h1>Pesa Cup Live Score Test</h1>
+    <ul id="events"></ul>
+
+    <script>
+        const evtSource = new EventSource('http://localhost:5000/api/v1/fixtures/live-score');
+        const list = document.getElementById('events');
+
+        evtSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const li = document.createElement('li');
+            li.textContent = `[${data.type}] ${JSON.stringify(data.data || data.message)}`;
+            list.appendChild(li);
+        };
+
+        evtSource.onerror = function(err) {
+            console.error("EventSource failed:", err);
+        };
+    </script>
+</body>
+</html>
