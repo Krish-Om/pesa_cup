@@ -1,0 +1,485 @@
+/* ── Layout ── */
+.registration-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.4fr);
+  gap: 3rem;
+  padding: 2rem 0 4rem;
+}
+
+.registration-intro {
+  padding: 1rem 0;
+}
+
+.registration-intro h2,
+.registration-form h2 {
+  margin: 0.5rem 0 1rem;
+  color: var(--white);
+}
+
+.registration-intro p {
+  max-width: 30rem;
+  line-height: 1.8;
+}
+
+.registration-kicker,
+.registration-step {
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.registration-help {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.registration-form {
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(0, 61, 122, 0.55), rgba(0, 13, 26, 0.8));
+}
+
+.registration-form-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.registration-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
+}
+
+.registration-field-wide {
+  grid-column: 1 / -1;
+}
+
+/* ── QR section ── */
+.qr-section {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.qr-instruction {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin: 0 0 1.25rem;
+  color: var(--text-light);
+}
+
+.qr-grid {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qr-placeholder {
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--border-color);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-light);
+  font-size: 0.8rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.qr-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.qr-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+}
+
+/* ── Dropzone ── */
+.dropzone {
+  position: relative;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  background: rgba(0, 0, 0, 0.15);
+  min-height: 120px;
+}
+
+.dropzone:hover,
+.dropzone:focus-visible {
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.05);
+  outline: none;
+}
+
+.dropzone--active {
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.dropzone--uploading {
+  cursor: wait;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.dropzone--filled {
+  cursor: default;
+  border-style: solid;
+  padding: 1rem;
+}
+
+.dropzone-input {
+  display: none;
+}
+
+.dropzone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dropzone-icon {
+  color: var(--text-light);
+  margin-bottom: 0.2rem;
+}
+
+.dropzone-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.dropzone-hint {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+/* ── Upload spinner ── */
+.upload-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--accent-gold);
+  border-radius: 50%;
+  animation: reg-spin 0.7s linear infinite;
+  margin-bottom: 0.4rem;
+}
+
+@keyframes reg-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Receipt preview ── */
+.receipt-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.receipt-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.receipt-preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.receipt-preview-name {
+  font-size: 0.85rem;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.receipt-upload-ok {
+  font-size: 0.78rem;
+  color: var(--success, #22c55e);
+  font-weight: 600;
+}
+
+.receipt-upload-error {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.receipt-preview-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #f87171;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  text-decoration: underline;
+  width: fit-content;
+  transition: color 0.15s;
+}
+
+.receipt-preview-remove:hover {
+  color: #ef4444;
+}
+
+.receipt-error {
+  margin-top: 0.5rem;
+}
+
+/* ── Field helpers ── */
+.field-hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.field-required {
+  color: #ef4444;
+  margin-left: 0.15rem;
+}
+
+.field-optional {
+  color: var(--text-light);
+  font-weight: 400;
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+}
+
+/* ── Submit button ── */
+.registration-submit {
+  width: 100%;
+  margin-top: 1.25rem;
+}
+
+.registration-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.registration-note {
+  margin: 1rem 0 0;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ── Inline errors ── */
+.form-error {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ef4444;
+  border-radius: 5px;
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  margin-top: 0.75rem;
+}
+
+/* ── Success / Confirmation view ── */
+.success-view {
+  max-width: 44rem;
+  margin: 4rem auto 6rem;
+  padding: 3rem 2.5rem;
+  border: 1px solid var(--success, #22c55e);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 61, 122, 0.6), rgba(0, 13, 26, 0.85));
+  text-align: center;
+  animation: fadeInUp 0.4s ease both;
+}
+
+.success-icon {
+  color: var(--success, #22c55e);
+  margin-bottom: 1rem;
+}
+
+.success-headline {
+  font-size: 1.6rem;
+  color: var(--white);
+  margin: 0 0 1.75rem;
+}
+
+.success-details {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.success-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.success-detail-row:first-child { padding-top: 0; }
+.success-detail-row:last-child  { border-bottom: none; padding-bottom: 0; }
+
+.success-detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-gold);
+  white-space: nowrap;
+}
+
+.success-detail-value {
+  font-size: 0.95rem;
+  color: var(--white);
+  text-align: right;
+}
+
+.success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.25rem;
+}
+
+.success-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  animation: badge-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+.success-message-text {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.8;
+  max-width: 32rem;
+  margin: 0 auto 1.75rem;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .registration-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .registration-form {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .registration-field-wide {
+    grid-column: auto;
+  }
+
+  .registration-form-heading {
+    display: block;
+  }
+
+  .registration-step {
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .qr-grid {
+    justify-content: center;
+  }
+
+  .receipt-preview {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .receipt-preview-info {
+    align-items: center;
+  }
+
+  .success-view {
+    padding: 2rem 1.5rem;
+    margin: 2rem auto 4rem;
+  }
+
+  .success-headline {
+    font-size: 1.3rem;
+  }
+
+  .success-detail-row {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .success-detail-value {
+    text-align: left;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+}

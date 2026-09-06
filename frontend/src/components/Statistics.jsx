@@ -50,7 +50,7 @@ export default function Statistics() {
     {
       icon: Trophy,
       value: tournamentData.summaryStats?.topScorer?.goals ?? 0,
-      label: `Top Scorer (${tournamentData.summaryStats?.topScorer?.name ?? 'N/A'})`,
+      label: `Top Scorer (${tournamentData.summaryStats?.topScorer?.playerName ?? 'N/A'})`,
       color: 'stat-played'
     }
   ] : [];

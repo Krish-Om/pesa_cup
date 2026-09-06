@@ -4,23 +4,23 @@ import {
   apiReadLimiter,
   contactFormLimiter,
 } from "../../middlewares/rate-limiter";
+import { uploadGallery } from "../../middlewares/upload";
 import galleryController from "./gallery.controller";
+import { requireAdmin } from "../../middlewares/auth";
 
 const gallery = express.Router();
 
-gallery.get(
-  "/",
-  apiReadLimiter,
-  asyncHandler(galleryController.getAllGalleryItems),
-);
-gallery.get(
-  "/:id",
-  apiReadLimiter,
-  asyncHandler(galleryController.getGalleryItemById),
-);
+// Public reads
+gallery.get("/",    apiReadLimiter, asyncHandler(galleryController.getAllGalleryItems));
+gallery.get("/:id", apiReadLimiter, asyncHandler(galleryController.getGalleryItemById));
+
+// All write operations require admin
+gallery.use(requireAdmin);
+
 gallery.post(
   "/",
   contactFormLimiter,
+  uploadGallery.single("file"),
   asyncHandler(galleryController.createGalleryItem),
 );
 gallery.put(

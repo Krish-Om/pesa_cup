@@ -2,11 +2,13 @@ import { FixturesRepository, fixturesRepository } from "./fixtures.repository";
 import { logger } from "../../utils/logger";
 import {
   type Fixture,
+  type InsertFixtureInput,
   type InsertFixturePayload,
   insertFixtureSchema,
 } from "./fixture.schema";
 import { ZodError } from "zod";
 import { NotFoundError } from "../../utils/app-error";
+import { eventBus } from "../../utils/event-bus";
 
 export class FixturesService {
   constructor(private repo: FixturesRepository = fixturesRepository) {}
@@ -55,7 +57,7 @@ export class FixturesService {
     return result;
   }
 
-  async createNewFixture(payload: InsertFixturePayload): Promise<Fixture> {
+  async createNewFixture(payload: InsertFixtureInput): Promise<Fixture> {
     logger.debug({ payload }, "Creating new fixture...");
     let result: Fixture | null = null;
     try {
@@ -80,7 +82,7 @@ export class FixturesService {
 
   async updateFixture(
     fixtureId: number,
-    updatedData: Partial<InsertFixturePayload>,
+    updatedData: Partial<InsertFixtureInput>,
   ): Promise<Fixture> {
     logger.debug({ fixtureId, updatedData }, `Updating Fixture ${fixtureId}`);
     let result: Fixture | null = null;
@@ -94,7 +96,13 @@ export class FixturesService {
         fixtureId,
         validatedPayload,
       );
-      result = (data ?? null) as Fixture | null;
+		result = (data ?? null) as Fixture | null;
+		eventBus.emit("fixture_updated", {
+			fixtureId: result?.id,
+			homescore: result?.scoreA,
+			awayscore: result?.scoreB,
+			status: result?.status,
+		})
     } catch (err) {
       // 3a. Re-throw ZodError directly to preserve schema validation details for HTTP 400
       if (err instanceof ZodError) {

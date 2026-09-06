@@ -1,67 +1,101 @@
-import { type Request,type Response } from "express";
-import dbSession from "../../config/database.ts";
+import { type NextFunction, type Request, type Response } from "express";
+import { AppError } from "../../utils/app-error";
+import { tournamentService } from "./tournament.service";
 
-//Tournament Repository
-const tournamentRepository ={
-  getTotalTeams: async (): Promise<number> => {
-    // Count unique teams from standings table
-    const result = await dbSession.query<{ total: number }>("SELECT COUNT(*) AS total FROM standings");
-    return result[0]?.total ?? 0;
-  },
-  getTotalMatches: async (): Promise<number> => {
-    // Count matches from fixtures table
-    const result = await dbSession.query<{ total: number }>("SELECT COUNT(*) AS total FROM fixtures");
-    return result[0]?.total ?? 0;
-  },
-  getTotalGoals: async (): Promise<number> => {
-    // Sum goals from finished fixtures
-    const result = await dbSession.query<{ total: number }>(
-      "SELECT (COALESCE(SUM(scoreA), 0) + COALESCE(SUM(scoreB), 0)) AS total FROM fixtures WHERE status = 'finished'"
-    );
-    return result[0]?.total ?? 0;
-  },
-  getTopScorer: async (): Promise<{ name: string; goals: number } | null> => {
-    // Get top scorer from scorers table
-    const result = await dbSession.query<{ name: string; goals: number }>(
-      "SELECT name, goals FROM scorers ORDER BY goals DESC LIMIT 1"
-    );
-    return result[0] ?? null;
-  },
-}
+// Safe integer validation helper
+const parseValidId = (value: string | undefined): number | null => {
+  const parsed = globalThis.Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+};
 
-// - Tournament: name, season, venue, organizer, summary stats
 const tournamentController = {
-  getTournamentMetadata: async (req: Request, res: Response) => {
+  getTournamentMetadata: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
     try {
-      // Mock data for tournament metadata and summary stats
-      const tournamentData = {
-        name: "Pesa Cup 2026",
-        season: "2026",
-        venue: "Khwopa Futsal, Bhaktapur",
-        organizer: "Pesa Cup Association",
-        summaryStats: {
-          totalTeams: 16,
-          totalMatches: 32,
-          totalGoals: 120,
-          topScorer: {
-            name: "John Doe",
-            goals: 10,
-          },
-        },
-      };
-      // constructing the response object with tournament metadata and summary stats
-      tournamentData.summaryStats = {
-        totalTeams: await tournamentRepository.getTotalTeams(),
-        totalMatches: await tournamentRepository.getTotalMatches(),
-        totalGoals: await tournamentRepository.getTotalGoals(),
-        topScorer: await tournamentRepository.getTopScorer() ?? { name: "N/A", goals: 0 },
-      }
-      res.status(200).json(tournamentData);
-    } catch (error) {
-      req.log.error({ error }, "Error fetching tournament metadata:");
-      res.status(500).json({ error: "Failed to fetch tournament metadata" });
-    }   
-  }
+      res.status(200).json(await tournamentService.getMetadata());
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getAll: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
+    try {
+      res.status(200).json(await tournamentService.getAll());
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getById: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
+    const id = parseValidId(req.params.id);
+    if (!id) {
+      next(new AppError("Invalid tournament ID", 400));
+      return;
+    }
+    try {
+      res.status(200).json(await tournamentService.getById(id));
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  create: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
+    try {
+      res.status(201).json(await tournamentService.create(req.body));
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  update: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
+    const id = parseValidId(req.params.id);
+    if (!id) {
+      next(new AppError("Invalid tournament ID", 400));
+      return;
+    }
+    try {
+      res.status(200).json(await tournamentService.update(id, req.body));
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  delete: async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+  ): Promise<void> => {
+    const id = parseValidId(req.params.id);
+    if (!id) {
+      next(new AppError("Invalid tournament ID", 400));
+      return;
+    }
+    try {
+      await tournamentService.delete(id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default tournamentController;

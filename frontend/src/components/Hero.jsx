@@ -30,6 +30,9 @@ export default function Hero() {
   <Link to="/standings" className="btn btn-secondary">
     VIEW STANDINGS
   </Link>
+  <Link to="/register" className="btn btn-secondary">
+    REGISTER TEAM
+  </Link>
 </div>
       </div>
     </section>

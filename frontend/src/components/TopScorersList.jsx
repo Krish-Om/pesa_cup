@@ -3,11 +3,11 @@ import { ScorersAPI } from "../data/apis/api.scorers";
 import "../css/TopScorersList.css";
 
 const defaultScorers = [
-  { rank: 1, name: "Ram Bahadur", team: "Team Alpha", goals: 8, assists: 3, avatar: "RB" },
-  { rank: 2, name: "Hari Prasad", team: "Team Beta", goals: 6, assists: 5, avatar: "HP" },
-  { rank: 3, name: "Sita Karki", team: "Team Gamma", goals: 5, assists: 2, avatar: "SK" },
-  { rank: 4, name: "Bikash Thapa", team: "Team Delta", goals: 3, assists: 4, avatar: "BT" },
-  { rank: 5, name: "Anish Gurung", team: "Team Alpha", goals: 2, assists: 6, avatar: "AG" },
+  { rank: 1, playerName: "Ram Bahadur", teamName: "Team Alpha", goals: 8, assists: 3, avatar: "RB" },
+  { rank: 2, playerName: "Hari Prasad", teamName: "Team Beta", goals: 6, assists: 5, avatar: "HP" },
+  { rank: 3, playerName: "Sita Karki", teamName: "Team Gamma", goals: 5, assists: 2, avatar: "SK" },
+  { rank: 4, playerName: "Bikash Thapa", teamName: "Team Delta", goals: 3, assists: 4, avatar: "BT" },
+  { rank: 5, playerName: "Anish Gurung", teamName: "Team Alpha", goals: 2, assists: 6, avatar: "AG" },
 ];
 
 export default function TopScorersList({ scorers: providedScorers }) {
@@ -62,7 +62,7 @@ export default function TopScorersList({ scorers: providedScorers }) {
   }, [providedScorers]);
 
   const activeScorers = useMemo(
-    () => [...scorers].sort((a, b) => (a.rank ?? Number.MAX_SAFE_INTEGER) - (b.rank ?? Number.MAX_SAFE_INTEGER) || b.goals - a.goals),
+    () => [...scorers].sort((a, b) => b.goals - a.goals || b.assists - a.assists),
     [scorers]
   );
   const maxGoals = activeScorers[0]?.goals ?? 0;
@@ -90,19 +90,19 @@ export default function TopScorersList({ scorers: providedScorers }) {
       <h2 className="scorers-heading">Top Scorers</h2>
       <div className="scorers-grid">
         {activeScorers.map((s, i) => (
-          <div className={`scorer-card ${i === 0 ? "first-place" : ""}`} key={s.id ?? s.rank ?? s.name}>
+          <div className={`scorer-card ${i === 0 ? "first-place" : ""}`} key={s.id ?? s.rank ?? s.playerName}>
 
             <span className={`scorer-rank ${i < 3 ? "top" : ""}`}>
               #{s.rank ?? i + 1}
             </span>
 
             <div className={`scorer-avatar ${i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : ""}`}>
-              {s.avatar ?? s.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
+              {s.avatar ?? s.playerName.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
             </div>
 
             <div className="scorer-info">
-              <p className="scorer-name">{s.name}</p>
-              <p className="scorer-team">{s.team}</p>
+              <p className="scorer-name">{s.playerName}</p>
+              <p className="scorer-team">{s.teamName}</p>
 
               <div className="goal-bar-track">
                 <div

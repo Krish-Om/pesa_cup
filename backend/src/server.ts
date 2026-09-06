@@ -1,4 +1,5 @@
-// server.ts
+// Load .env before importing modules that initialize runtime configuration.
+import "dotenv/config";
 import app from "./app";
 import { dbSession } from "./config/database";
 import { migrate } from "drizzle-orm/bun-sqlite/migrator"; // Or your respective DB driver migrator

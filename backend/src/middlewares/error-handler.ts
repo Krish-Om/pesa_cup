@@ -8,7 +8,12 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+  if (
+    err instanceof SyntaxError &&
+    "status" in err &&
+    (err as { status?: unknown }).status === 400 &&
+    "body" in err
+  ) {
     res.status(400).json({
       success: false,
       message: "Invalid JSON payload",

@@ -27,6 +27,7 @@ export default function Header() {
             <Link to="/gallery" className="nav-link">GALLERY</Link>
             <a href="/sponsors" className="nav-link">SPONSORS</a>
             <Link to="/contact" className="nav-link">CONTACT</Link>
+            <Link to="/register" className="nav-link">REGISTER</Link>
           </nav>
 
           <button className="menu-toggle" onClick={toggleMenu}>

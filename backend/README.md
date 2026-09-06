@@ -1,115 +1,49 @@
-# Pesa Cup — Backend
+# Pesa Cup Backend
 
-REST API for the Pesa Cup tournament platform. Built with Bun, TypeScript, and Express 5.
+REST API for the Pesa Cup tournament platform. The backend uses Bun, TypeScript, Express 5, Drizzle ORM, and SQLite.
 
-## Tech Stack
+## Documentation
 
-| Tool | Purpose |
-|------|---------|
-| Bun | Runtime & package manager |
-| TypeScript | Language |
-| Express 5 | HTTP framework |
-| bun:sqlite | Embedded SQLite database |
-| Zod | Request validation |
-| Pino | Structured logging |
-| dotenv | Environment config |
+- [API reference](docs/api.md)
+- [Setup and operations](docs/setup.md)
+- [Payment flow](docs/payment-flow.md)
+- [Backend TODO](docs/todo.md)
+- [Architecture and testing](docs/architecture-and-testing.md)
+- [Backend guidelines](docs/backend-server-guidelines.md)
+- [Backend decisions](docs/Backend-Decisions.md)
 
-## Project Structure
+The API is versioned under `/api/v1`. Current behavior is documented in the API reference; future ideas are labelled as planned in the guidelines and decisions documents.
 
-```
-src/
-├── config/
-│   └── database.ts       # SQLite connection & DbSession interface
-├── db/
-│   ├── schema.ts         # Table definitions (auto-created on startup)
-│   └── seed.ts           # Initial data seeding
-├── middlewares/
-│   └── error-handler.ts  # 404 & global error handlers
-├── modules/              # Feature modules (routes + logic)
-│   ├── fixtures/
-│   ├── standings/
-│   ├── scorers/
-│   ├── gallery/
-│   ├── contact/
-│   └── tournament/
-├── app.ts                # Express app setup, CORS, route mounting
-└── server.ts             # Entry point — schema init, seed, listen
-```
+## Quick Start
 
-## API Endpoints
-
-Base path: `/api/v1`
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/health` | Health check |
-| * | `/fixtures` | Match fixtures |
-| * | `/standings` | League standings |
-| * | `/scorers` | Top scorers |
-| * | `/gallery` | Gallery categories & photos |
-| * | `/contacts` | Contact form messages |
-| * | `/tournament` | Tournament info |
-
-## Database Schema
-
-Six tables are auto-created on startup:
-
-- `fixtures` — match details, scores, status
-- `standings` — group stage table per team
-- `scorers` — goals & assists per player
-- `gallery_categories` — photo album categories
-- `gallery_photos` — individual photos linked to categories
-- `contact_messages` — submitted contact form entries
-
-## Getting Started
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) ≥ 1.0
-
-### Install & Run
+Requirements: Bun 1.x and a writable workspace.
 
 ```bash
 bun install
-
-# Development (watch mode)
+bun run db:migrate
 bun run dev
-
-# Production
-bun run start
 ```
 
-The server starts at **http://localhost:3000**.
+The server listens on `http://localhost:3000` by default. See [setup and operations](docs/setup.md) for configuration, migrations, seeding, uploads, and Docker usage.
 
-### Environment Variables
-
-Create a `.env` file in the `backend/` directory:
-
-```env
-PORT=3000
-NODE_ENV=development          # uses pesa_cup_dev.sqlite
-DATABASE_PATH=./pesa_cup_prod.sqlite  # used in production
-ALLOWED_ORIGINS=http://localhost:5173
-```
-
-> In `development` mode the database file is `pesa_cup_dev.sqlite`.  
-> In any other environment it uses `DATABASE_PATH` (defaults to `pesa_cup_prod.sqlite`).
-
-### Other Commands
+## Common Commands
 
 ```bash
-bun run build    # Bundle to ./dist
+bun run dev          # Start the development server with watch mode
+bun run build        # Bundle the server into dist/
+bun test             # Run isolated backend unit tests
+bun run db:migrate   # Apply Drizzle migrations
+bun run db:seed      # Replace database content with development seed data
+bun run db:generate  # Generate a migration from schema changes
+bun run db:studio    # Open Drizzle Studio
 ```
 
-## Docker
+`db:seed` is destructive and should only be run against an intended database.
 
-```bash
-docker build -t pesa-cup-backend .
-docker run -p 3000:3000 --env-file .env pesa-cup-backend
-```
+## Module Layout
 
-## TODOS
-[] Add a SSE feature for live score updates please refer to this docs [Backend Server Guidleins](./docs/backend-server-guidelines.md)
-[] Add a image storage
-[] Add a admin panel, to update the live scores by person at the premise of event.
-[] do we need a load balancer ?
+Each feature under `src/modules` follows a route, controller, service, repository, and schema structure where applicable. Shared middleware, database configuration, migrations, and utilities live under `src/middlewares`, `src/config`, `src/db`, and `src/utils`.
+
+## Scope
+
+Implemented features include public tournament content, contact and registration submission, admin-protected writes, gallery uploads, SQLite persistence, migrations, and seed data. SSE live updates, JWT/session authentication, an admin UI, and load-balancer deployment are not implemented in the current backend.

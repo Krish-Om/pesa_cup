@@ -3,8 +3,11 @@ import fixturesController from "./fixtures.controller";
 import { asyncHandler } from "../../middlewares/error-handler";
 import {
   apiReadLimiter,
-  contactFormLimiter,
+	contactFormLimiter
 } from "../../middlewares/rate-limiter";
+import { sseConnectionLimiter } from "../../middlewares/sseLimiter";
+import { requireAdmin } from "../../middlewares/auth";
+import { streamLiveScore } from "./fixtures.sse";
 const fixtures = express.Router();
 
 fixtures.get(
@@ -12,11 +15,14 @@ fixtures.get(
   apiReadLimiter,
   asyncHandler(fixturesController.getAllFixtures),
 );
+fixtures.get("/live-score", sseConnectionLimiter,asyncHandler(streamLiveScore));
 fixtures.get(
   "/:id",
   apiReadLimiter,
   asyncHandler(fixturesController.getFixtureById),
 );
+
+fixtures.use(requireAdmin); // Apply requireAdmin middleware to all routes below
 fixtures.post(
   "/",
   contactFormLimiter,
