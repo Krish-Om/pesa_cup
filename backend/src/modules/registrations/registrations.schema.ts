@@ -13,12 +13,11 @@ export const insertRegistrationSchema = createInsertSchema(registrations, {
   playerCount: z.number().int().positive("Player count must be greater than 0"),
   batchYear: z.string().min(1, "Batch/Graduation year is required").trim(),
 
-  // Payment Validation
-  paymentMethod: z.enum(["ESEWA", "MANUAL", "CASH"]).default("ESEWA"),
-  transactionUuid: z.string().min(1, "Transaction UUID is required"),
-  transactionCode: z.string().nullable().optional(),
-  amountPaid: z.number().int().positive("Amount paid must be greater than 0"),
-  paymentReceiptUrl: z.string().url().nullable().optional(),
+  // Payment receipt — relative path returned by POST /registrations/upload-receipt
+  // e.g. /uploads/receipts/receipt-1725518232-483920183.jpg
+  paymentReceiptUrl: z.string().min(1, "Payment receipt is required"),
+  // Optional manual transaction reference
+  transactionCode: z.string().trim().optional().nullable(),
 
   status: z.enum(["PENDING", "APPROVED", "REJECTED"]).default("PENDING"),
   rejectionReason: z.string().nullable().optional(),
@@ -35,18 +34,8 @@ export const approveRegistrationSchema = z.object({
     .default("Group A"),
 });
 
-export const registrationDetailsSchema = z.object({
-  tournamentId: z.number().int().positive("Invalid tournament ID"),
-  teamName: z.string().min(1, "Team name is required").trim(),
-  captainName: z.string().min(1, "Captain name is required").trim(),
-  captainEmail: z.string().email("Invalid captain email address").trim(),
-  captainPhone: z.string().min(10, "Valid phone number is required").trim(),
-  playerCount: z.number().int().positive("Player count must be greater than 0"),
-  batchYear: z.string().min(1, "Batch/Graduation year is required").trim(),
-});
-
-export const verifyPaymentSchema = registrationDetailsSchema.extend({
-  encodedResponse: z.string().min(1, "Payment response is required"),
+export const rejectRegistrationSchema = z.object({
+  rejectionReason: z.string().trim().min(1).optional(),
 });
 
 export type Registration = typeof registrations.$inferSelect;

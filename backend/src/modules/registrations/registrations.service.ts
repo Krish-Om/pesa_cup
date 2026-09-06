@@ -5,6 +5,7 @@ import { registrations, standings, teams } from "../../db/schema";
 import {
   approveRegistrationSchema,
   insertRegistrationSchema,
+  rejectRegistrationSchema,
   type Registration,
   type RegistrationInput,
 } from "./registrations.schema";
@@ -12,17 +13,11 @@ import {
   RegistrationsRepository,
   registrationsRepository,
 } from "./registrations.repository";
-import { PaymentService, type EsewaClient } from "./payment.service";
 
 export class RegistrationsService {
-  private readonly paymentService: PaymentService;
-
   constructor(
     private readonly repo: RegistrationsRepository = registrationsRepository,
-    esewaClient?: EsewaClient,
-  ) {
-    this.paymentService = new PaymentService(repo, esewaClient);
-  }
+  ) {}
 
   async create(payload: RegistrationInput): Promise<Registration> {
     const validated = insertRegistrationSchema.parse(payload);
@@ -36,14 +31,6 @@ export class RegistrationsService {
 
   async getAll(): Promise<Registration[]> {
     return this.repo.getAll();
-  }
-
-  initiatePayment(payload: unknown) {
-    return this.paymentService.initiate(payload);
-  }
-
-  verifyPayment(payload: unknown): Promise<Registration> {
-    return this.paymentService.verify(payload);
   }
 
   async approve(id: number, payload: unknown): Promise<Registration> {
@@ -87,6 +74,22 @@ export class RegistrationsService {
       });
 
       return updated;
+    });
+  }
+
+  async reject(id: number, payload: unknown): Promise<Registration> {
+    const { rejectionReason } = rejectRegistrationSchema.parse(payload ?? {});
+
+    const registrationRecord = await this.repo.getById(id);
+    if (!registrationRecord)
+      throw new NotFoundError(`Registration with ID ${id} not found`);
+    if (registrationRecord.status !== "PENDING") {
+      throw new AppError("Only pending registrations can be rejected", 409);
+    }
+
+    return this.repo.update(id, {
+      status: "REJECTED",
+      rejectionReason: rejectionReason ?? null,
     });
   }
 }
