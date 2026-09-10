@@ -239,6 +239,129 @@
   color: #ef4444;
 }
 
+/* ── Fixture status badges (upcoming / live / finished) ─────────────── */
+.admin-status-upcoming {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--accent-gold);
+}
+
+.admin-status-live {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.admin-status-finished {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+/* ── Add button (page header action) ─────────────────────────────── */
+.admin-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* ── Inline note ──────────────────────────────────────────────────── */
+.admin-inline-note {
+  color: var(--text-light);
+  opacity: 0.75;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Forms (used inside modals) ───────────────────────────────────── */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.admin-form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 0;
+}
+
+.admin-form-input,
+.admin-form-select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 0.88rem;
+  transition: all 0.3s ease;
+}
+
+.admin-form-select {
+  cursor: pointer;
+}
+
+.admin-form-select option {
+  background-color: var(--primary-darker);
+  color: var(--white);
+}
+
+.admin-form-input::placeholder {
+  color: rgba(224, 224, 224, 0.45);
+}
+
+.admin-form-input:focus,
+.admin-form-select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.admin-form-input:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  color: var(--accent-gold);
+}
+
+.admin-form-score-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-form-score-sep {
+  color: var(--text-light);
+  opacity: 0.6;
+}
+
+.admin-form-error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+@media (max-width: 560px) {
+  .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Row actions ──────────────────────────────────────────────────── */
 .admin-row-actions {
   display: flex;
