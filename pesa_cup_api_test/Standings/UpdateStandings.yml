@@ -1,0 +1,22 @@
+info:
+  name: UpdateStandings
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{server_url}}/standings/2"
+  body:
+    type: json
+    data: |-
+      {
+        
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

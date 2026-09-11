@@ -1,0 +1,28 @@
+info:
+  name: esewa intiate requst
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://localhost:3000/api/v1/registrations/initiate-payment
+  body:
+    type: json
+    data: |-
+      {
+        "tournamentId": 1,
+        "teamName": "Bruno Test FC",
+        "captainName": "Alex Test",
+        "captainEmail": "alex.test@example.com",
+        "captainPhone": "9812345678",
+        "playerCount": 8,
+        "batchYear": "2026"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

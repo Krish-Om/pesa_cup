@@ -1,0 +1,27 @@
+info:
+  name: Create Fixture
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{server_url}}/fixtures"
+  body:
+    type: json
+    data: |-
+      {
+        "teamA":"Team JPT122",
+        "teamB":"Team GPT2222",
+        "venue":"HEalthy futsal",
+        "date":"2026-03-11",
+        "time":"12:00",
+        "status":"upcoming"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

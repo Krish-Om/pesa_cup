@@ -1,0 +1,23 @@
+info:
+  name: Update Tournament
+  type: http
+  seq: 2
+
+http:
+  method: PATCH
+  url: "{{server_url}}/tournaments/2"
+  body:
+    type: json
+    data: |-
+      {
+        "organizer" : "Ex-Batch-2076",
+        "venue":"Futzone Futsal"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

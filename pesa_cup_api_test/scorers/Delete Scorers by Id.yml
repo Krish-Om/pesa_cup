@@ -1,0 +1,16 @@
+info:
+  name: Delete Scorers by Id
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{server_url}}/scorers/4"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

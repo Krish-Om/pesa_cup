@@ -1,0 +1,32 @@
+info:
+  name: Create Registration
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{server_url}}/registrations"
+  body:
+    type: json
+    data: |-
+      {
+        "tournamentId": 1,
+        "teamName": "Batch 2020 Legends",
+        "captainName": "Aarav Sharma",
+        "captainEmail": "aarav.sharma@example.com",
+        "captainPhone": "9841234567",
+        "playerCount": 7,
+        "batchYear": "2020",
+        "paymentMethod": "ESEWA",
+        "transactionUuid": "pesa-cup-reg-1725518232",
+        "transactionCode": "0000XYZ",
+        "amountPaid": 2500
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,33 @@
+info:
+  name: Upload a single file
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{server_url}}/gallery"
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - /home/krishom/Downloads/IMG_20260823_201505.jpg
+        contentType: image/jpeg
+      - name: title
+        type: text
+        value: players ID
+      - name: category
+        type: text
+        value: players id
+      - name: description
+        type: text
+        value: Official Players Id
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
