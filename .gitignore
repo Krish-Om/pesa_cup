@@ -43,7 +43,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 Thumbs.db
 
 # SQLite databases & temp files
-data/
+/data/
 *.sqlite
 *.sqlite3
 *.db
