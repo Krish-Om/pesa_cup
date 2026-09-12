@@ -1,0 +1,41 @@
+info:
+  name: esewa redirction
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: https://rc-epay.esewa.com.np/api/epay/main/v2/form
+  body:
+    type: form-urlencoded
+    data:
+      - name: product_code
+        value: EPAYTEST
+      - name: amount
+        value: "2500"
+      - name: tax_amount
+        value: "0"
+      - name: transaction_uuid
+        value: pesa-cup-902a14f7-1fa1-4acf-be69-994da14cb8c6
+      - name: total_amount
+        value: "2500"
+      - name: product_service_charge
+        value: "0"
+      - name: product_delivery_charge
+        value: "0"
+      - name: success_url
+        value: http://localhost:5173/payment/success
+      - name: failure_url
+        value: http://localhost:5173/payment/failure
+      - name: signed_field_names
+        value: total_amount,transaction_uuid,product_code
+      - name: signature
+        value: 8WNDFPqUj1gOlBdi/mPHdDh2ijiOXmcZr2M90dRD1FU=
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,5 @@
+name: PesaCup
+variables:
+  - name: server_url
+    value: http://localhost:3000/api/v1
+    description: Backend URL

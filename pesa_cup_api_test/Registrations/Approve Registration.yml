@@ -1,0 +1,22 @@
+info:
+  name: Approve Registration
+  type: http
+  seq: 3
+
+http:
+  method: PATCH
+  url: "{{server_url}}/registrations/2/approve"
+  body:
+    type: json
+    data: |-
+      {
+        "status": "APPROVED"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

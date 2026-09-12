@@ -1,0 +1,25 @@
+info:
+  name: Create Contact Message
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{server_url}}/contacts"
+  body:
+    type: json
+    data: |-
+      {
+        "name":"ABCDEf",
+        "email":"abcedf@example.com",
+        "subject":"Unimportant Guests2",
+        "message": "Please stop inviting unimportant and unrelated peoples2."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,32 @@
+opencollection: 1.0.0
+
+info:
+  name: PESA CUP
+  version: v1.0.0
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: 32c018bfabd17dcfa08bc1f12f9e4bcfd48a998bcaca1debafa267b591cf94fdbe2a231015317295b37688f74e72ea84750579ab857efb0425d119c62325cd45
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
+    presets:
+      request:
+        type: http
+        url: "{{server_url}}/"
+      defaultEnvironment: PesaCup

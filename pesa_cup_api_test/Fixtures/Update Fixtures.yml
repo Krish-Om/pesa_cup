@@ -1,0 +1,25 @@
+info:
+  name: Update Fixtures
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{server_url}}/fixtures/2"
+  body:
+    type: json
+    data: |-
+      {
+        "status":"live",
+        "scoreA":45,
+        "scoreB":200,
+        "status":"live"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
