@@ -1,4 +1,4 @@
-import { count,eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { dbSession } from "../../config/database";
 import { AppError, NotFoundError } from "../../utils/app-error";
 import { registrations, standings, teams } from "../../db/schema";

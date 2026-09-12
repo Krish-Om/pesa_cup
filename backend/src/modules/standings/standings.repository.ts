@@ -1,5 +1,5 @@
 import { dbSession } from "../../config/database";
-import {standings, type DBInput, type DBReturnType, type Standings} from "./standings.schema";
+import {standings, type DBInput, type DBReturnType} from "./standings.schema";
 import { eq} from "drizzle-orm";
 
 export class StandingsRepository {

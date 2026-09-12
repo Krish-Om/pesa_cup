@@ -127,7 +127,7 @@ export const scorers = sqliteTable("scorers", {
     avatar: text("avatar"),
     createdAt: integer("created_at", {mode: "timestamp"})
         .notNull()
-        .default(sql`CURRENT_TIMESTAMP`),
+        .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const galleryCategories = sqliteTable("gallery_categories", {
