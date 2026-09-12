@@ -157,8 +157,7 @@ async function seed() {
       goalFor: 9,
       goalAgainst: 2,
       goalDifference: 7,
-      points: 9,
-      position: 1,
+      points: 9
     });
   await dbSession.insert(standings).values({
       teamId: team["BCA Warriors"]!,
@@ -170,8 +169,7 @@ async function seed() {
       goalFor: 6,
       goalAgainst: 4,
       goalDifference: 2,
-      points: 6,
-      position: 2,
+      points: 6
     });
   await dbSession.insert(standings).values({
       teamId: team["BBA Lions"]!,
@@ -184,7 +182,6 @@ async function seed() {
       goalAgainst: 6,
       goalDifference: -2,
       points: 3,
-      position: 3,
     });
 
   await dbSession.insert(registrations).values({
