@@ -1,18 +1,24 @@
-import { eq } from "drizzle-orm";
 import { dbSession } from "../../config/database";
-import { standings, type DBInput, type DBReturnType } from "./standings.schema";
+import {standings, type DBInput, type DBReturnType, type Standings} from "./standings.schema";
+import { eq} from "drizzle-orm";
 
 export class StandingsRepository {
   async getAllStandings(): Promise<DBReturnType[]> {
     const rows = await dbSession.query.standings.findMany({
       with: { team: true, tournament: true },
+      orderBy:(standings,{desc,asc})=>[
+          desc(standings.points),
+          desc(standings.goalDifference),
+          desc(standings.goalFor),
+          asc(standings.teamId),
+      ]
     });
-    return rows.map((row) => ({
+    return rows.map((row,index) => ({
       ...row,
       team: row.team.name,
+      position: index + 1,
     })) as DBReturnType[];
   }
-
   async getStandingsById(id: number): Promise<DBReturnType | null> {
     const result = await dbSession.query.standings.findFirst({
       where: (table, operators) => operators.eq(table.id, id),
