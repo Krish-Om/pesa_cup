@@ -120,12 +120,14 @@ export default function Standings() {
     );
   }, [standings, selectedTournament]);
 
-  // Extract unique groups for the selected tournament
+  // Extract unique groups for the selected tournament (sorted so Group A always precedes Group B, etc.)
   const groups = useMemo(() => {
     const groupSet = new Set(
       currentTournamentStandings.map((item) => item.group || "Group A"),
     );
-    return Array.from(groupSet);
+    return Array.from(groupSet).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+    );
   }, [currentTournamentStandings]);
 
   // Set default selected group
@@ -143,12 +145,18 @@ export default function Standings() {
   }, [currentTournamentStandings, selectedGroup]);
 
   return (
-    <section className="standings" id="standings">
+    <section className="standings-section" id="standings">
       <div className="container">
         <h2 className="section-title">Standings</h2>
 
-        {loading && <p>Loading standings from the backend...</p>}
-        {!loading && error && <p>{error}</p>}
+        {loading && (
+          <p style={{ textAlign: "center" }}>
+            Loading standings from the backend...
+          </p>
+        )}
+        {!loading && error && (
+          <p style={{ textAlign: "center", color: "#ef4444" }}>{error}</p>
+        )}
 
         {!loading && tournaments.length > 0 && (
           <div className="standings-filters">
@@ -190,7 +198,7 @@ export default function Standings() {
           {!loading && filteredData.length > 0 ? (
             <StandingsTable data={filteredData} />
           ) : !loading ? (
-            <p>No standings available.</p>
+            <p style={{ textAlign: "center" }}>No standings available.</p>
           ) : null}
         </div>
       </div>

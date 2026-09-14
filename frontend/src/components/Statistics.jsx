@@ -1,7 +1,6 @@
-
-import { Users, Activity, Zap, Trophy } from 'lucide-react';
-import '../css/Statistics.css';
+import { Activity, Trophy, Users, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import "../css/Statistics.css";
 import { StatisticsAPI } from "../data/apis/api.statistic";
 
 export default function Statistics() {
@@ -17,8 +16,8 @@ export default function Statistics() {
         setTournamentData(data);
         setError(null);
       } catch (err) {
-        setError('Failed to load tournament statistics.');
-        console.error('Error loading tournament statistics:', err);
+        setError("Failed to load tournament statistics.");
+        console.error("Error loading tournament statistics:", err);
       } finally {
         setLoading(false);
       }
@@ -28,39 +27,43 @@ export default function Statistics() {
   }, []);
 
   // Build stats array from API data
-  const stats = tournamentData ? [
-    {
-      icon: Users,
-      value: tournamentData.summaryStats?.totalTeams ?? 0,
-      label: 'Total Teams',
-      color: 'stat-teams'
-    },
-    {
-      icon: Activity,
-      value: tournamentData.summaryStats?.totalMatches ?? 0,
-      label: 'Total Matches',
-      color: 'stat-matches'
-    },
-    {
-      icon: Zap,
-      value: tournamentData.summaryStats?.totalGoals ?? 0,
-      label: 'Total Goals',
-      color: 'stat-goals'
-    },
-    {
-      icon: Trophy,
-      value: tournamentData.summaryStats?.topScorer?.goals ?? 0,
-      label: `Top Scorer (${tournamentData.summaryStats?.topScorer?.playerName ?? 'N/A'})`,
-      color: 'stat-played'
-    }
-  ] : [];
+  const stats = tournamentData
+    ? [
+        {
+          icon: Users,
+          value: tournamentData.summaryStats?.totalTeams ?? 0,
+          label: "Total Teams",
+          color: "stat-teams",
+        },
+        {
+          icon: Activity,
+          value: tournamentData.summaryStats?.totalMatches ?? 0,
+          label: "Total Matches",
+          color: "stat-matches",
+        },
+        {
+          icon: Zap,
+          value: tournamentData.summaryStats?.totalGoals ?? 0,
+          label: "Total Goals",
+          color: "stat-goals",
+        },
+        {
+          icon: Trophy,
+          value: tournamentData.summaryStats?.topScorer?.goals ?? 0,
+          label: `Top Scorer (${tournamentData.summaryStats?.topScorer?.playerName ?? "N/A"})`,
+          color: "stat-played",
+        },
+      ]
+    : [];
 
   if (loading) {
     return (
       <section className="statistics" id="stats">
         <div className="container">
           <h2 className="section-title">Tournament Statistics</h2>
-          <p style={{ textAlign: 'center', color: '#888' }}>Loading statistics...</p>
+          <p style={{ textAlign: "center", color: "#888" }}>
+            Loading statistics...
+          </p>
         </div>
       </section>
     );
@@ -71,7 +74,7 @@ export default function Statistics() {
       <section className="statistics" id="stats">
         <div className="container">
           <h2 className="section-title">Tournament Statistics</h2>
-          <p style={{ textAlign: 'center', color: 'red' }}>{error}</p>
+          <p style={{ textAlign: "center", color: "red" }}>{error}</p>
         </div>
       </section>
     );
@@ -80,11 +83,14 @@ export default function Statistics() {
   return (
     <section className="statistics" id="stats">
       <div className="container">
-        <h2 className="section-title">{tournamentData?.name ?? 'Tournament Statistics'}</h2>
+        <h2 className="section-title">
+          {tournamentData?.name ?? "Tournament Statistics"}
+        </h2>
         <p className="stats-subtitle">
           {tournamentData?.season && `Season ${tournamentData.season}`}
           {tournamentData?.venue && ` • ${tournamentData.venue}`}
-          {tournamentData?.organizer && ` • Organized by ${tournamentData.organizer}`}
+          {tournamentData?.organizer &&
+            ` • Organized by ${tournamentData.organizer}`}
         </p>
 
         <div className="stats-grid">

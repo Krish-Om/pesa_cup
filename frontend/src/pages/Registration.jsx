@@ -1,9 +1,12 @@
+import { CheckCircle2, UploadCloud, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, UploadCloud, X } from "lucide-react";
-import { submitRegistration, uploadPaymentReceipt } from "../data/apis/api.registrations";
-import "./Pages.css";
 import "../css/Registration.css";
+import {
+  submitRegistration,
+  uploadPaymentReceipt,
+} from "../data/apis/api.registrations";
+import "./Pages.css";
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -37,13 +40,13 @@ export default function Registration() {
   const [submittedData, setSubmittedData] = useState(null);
   const fileInputRef = useRef(null);
 
-  // ── form field handler ──────────────────────────────────────────────
+  // ── Form Field Handler ──────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ── receipt upload ──────────────────────────────────────────────────
+  // ── Receipt Upload Handler ──────────────────────────────────────────
   const processFile = async (file) => {
     if (!file) return;
 
@@ -60,7 +63,13 @@ export default function Registration() {
     }
 
     const previewUrl = URL.createObjectURL(file);
-    setReceipt({ file, previewUrl, uploadedUrl: null, uploading: true, error: "" });
+    setReceipt({
+      file,
+      previewUrl,
+      uploadedUrl: null,
+      uploading: true,
+      error: "",
+    });
 
     try {
       const { url } = await uploadPaymentReceipt(file);
@@ -99,13 +108,15 @@ export default function Registration() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // ── form submit ─────────────────────────────────────────────────────
+  // ── Form Submit Handler ─────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
 
     if (!receipt.uploadedUrl) {
-      setFormError("Please upload your payment receipt screenshot before submitting.");
+      setFormError(
+        "Please upload your payment receipt screenshot before submitting.",
+      );
       return;
     }
 
@@ -127,19 +138,26 @@ export default function Registration() {
       });
       setSubmitted(true);
     } catch (err) {
-      setFormError(err.message || "Unable to submit registration. Please try again.");
+      setFormError(
+        err.message || "Unable to submit registration. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ── Confirmation view ───────────────────────────────────────────────
+  // ── Confirmation View ──────────────────────────────────────────────
   if (submitted && submittedData) {
     return (
       <main className="page-content">
         <div className="page-header">
-          <h1>Register Your Team</h1>
-          <p>Pay via QR code, then submit your receipt to complete registration.</p>
+          <div className="container">
+            <h1>Register Your Team</h1>
+            <p>
+              Pay via QR code, then submit your receipt to complete
+              registration.
+            </p>
+          </div>
         </div>
         <div className="container">
           <div className="success-view" role="region" aria-live="polite">
@@ -147,20 +165,28 @@ export default function Registration() {
               <CheckCircle2 size={64} strokeWidth={1.5} />
             </div>
 
-            <h2 className="success-headline">Registration Submitted Successfully!</h2>
+            <h2 className="success-headline">
+              Registration Submitted Successfully!
+            </h2>
 
             <div className="success-details">
               <div className="success-detail-row">
                 <span className="success-detail-label">Team</span>
-                <span className="success-detail-value">{submittedData.teamName}</span>
+                <span className="success-detail-value">
+                  {submittedData.teamName}
+                </span>
               </div>
               <div className="success-detail-row">
                 <span className="success-detail-label">Captain</span>
-                <span className="success-detail-value">{submittedData.captainName}</span>
+                <span className="success-detail-value">
+                  {submittedData.captainName}
+                </span>
               </div>
               <div className="success-detail-row">
                 <span className="success-detail-label">Batch Year</span>
-                <span className="success-detail-value">{submittedData.batchYear}</span>
+                <span className="success-detail-value">
+                  {submittedData.batchYear}
+                </span>
               </div>
             </div>
 
@@ -175,8 +201,12 @@ export default function Registration() {
             </p>
 
             <div className="success-actions">
-              <Link to="/" className="btn btn-primary">Back to Home</Link>
-              <Link to="/fixtures" className="btn btn-secondary">View Fixtures</Link>
+              <Link to="/" className="btn btn-primary">
+                Back to Home
+              </Link>
+              <Link to="/fixtures" className="btn btn-secondary">
+                View Fixtures
+              </Link>
             </div>
           </div>
         </div>
@@ -184,7 +214,7 @@ export default function Registration() {
     );
   }
 
-  // ── Registration form ───────────────────────────────────────────────
+  // ── Registration Form View ─────────────────────────────────────────
   const dropzoneClass = [
     "dropzone",
     isDragOver ? "dropzone--active" : "",
@@ -197,12 +227,16 @@ export default function Registration() {
   return (
     <main className="page-content">
       <div className="page-header">
-        <h1>Register Your Team</h1>
-        <p>Pay via QR code, then upload your receipt to complete registration.</p>
+        <div className="container">
+          <h1>Register Your Team</h1>
+          <p>
+            Pay via QR code, then upload your receipt to complete registration.
+          </p>
+        </div>
       </div>
 
       <div className="container registration-layout">
-        {/* ── Left: intro ── */}
+        {/* Left: Info */}
         <section className="registration-intro">
           <span className="registration-kicker">PESA CUP 2083</span>
           <h2>Secure your place on the court.</h2>
@@ -216,9 +250,8 @@ export default function Registration() {
           </Link>
         </section>
 
-        {/* ── Right: form ── */}
+        {/* Right: Form */}
         <form className="registration-form" onSubmit={handleSubmit} noValidate>
-
           {/* Step 1: Team details */}
           <div className="registration-form-heading">
             <div>
@@ -232,50 +265,76 @@ export default function Registration() {
             <div className="form-group registration-field-wide">
               <label htmlFor="teamName">Team name</label>
               <input
-                id="teamName" name="teamName"
-                value={form.teamName} onChange={handleChange} required
+                id="teamName"
+                name="teamName"
+                value={form.teamName}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="form-group">
               <label htmlFor="captainName">Captain name</label>
               <input
-                id="captainName" name="captainName"
-                value={form.captainName} onChange={handleChange} required
+                id="captainName"
+                name="captainName"
+                value={form.captainName}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="form-group">
               <label htmlFor="captainPhone">Captain phone</label>
               <input
-                id="captainPhone" name="captainPhone" type="tel"
-                value={form.captainPhone} onChange={handleChange}
-                required minLength="10"
+                id="captainPhone"
+                name="captainPhone"
+                type="tel"
+                value={form.captainPhone}
+                onChange={handleChange}
+                required
+                minLength="10"
               />
             </div>
             <div className="form-group registration-field-wide">
               <label htmlFor="captainEmail">Captain email</label>
               <input
-                id="captainEmail" name="captainEmail" type="email"
-                value={form.captainEmail} onChange={handleChange} required
+                id="captainEmail"
+                name="captainEmail"
+                type="email"
+                value={form.captainEmail}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="form-group">
               <label htmlFor="playerCount">Number of players</label>
               <input
-                id="playerCount" name="playerCount" type="number" min="1"
-                value={form.playerCount} onChange={handleChange} required
+                id="playerCount"
+                name="playerCount"
+                type="number"
+                min="1"
+                value={form.playerCount}
+                onChange={handleChange}
+                required
               />
             </div>
             <div className="form-group">
               <label htmlFor="batchYear">Alumni batch year</label>
               <input
-                id="batchYear" name="batchYear" placeholder="e.g. 2021"
-                value={form.batchYear} onChange={handleChange} required
+                id="batchYear"
+                name="batchYear"
+                placeholder="e.g. 2021"
+                value={form.batchYear}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
 
           {/* Step 2: Payment */}
-          <div className="registration-form-heading" style={{ marginTop: "2rem" }}>
+          <div
+            className="registration-form-heading"
+            style={{ marginTop: "2rem" }}
+          >
             <div>
               <span className="registration-kicker">STEP 2 — PAYMENT</span>
               <h2>Pay &amp; upload receipt</h2>
@@ -292,14 +351,12 @@ export default function Registration() {
             <div className="qr-grid">
               <div className="qr-card">
                 <div className="qr-placeholder">
-                  {/* Replace with: <img src="/qr/esewa-qr.png" alt="eSewa QR code" /> */}
                   <span>eSewa QR</span>
                 </div>
                 <span className="qr-label">eSewa</span>
               </div>
               <div className="qr-card">
                 <div className="qr-placeholder">
-                  {/* Replace with: <img src="/qr/fonepay-qr.png" alt="Fonepay QR code" /> */}
                   <span>Fonepay QR</span>
                 </div>
                 <span className="qr-label">Fonepay</span>
@@ -314,16 +371,27 @@ export default function Registration() {
               <span className="field-required">*</span>
             </label>
 
-            {/* The outer div is the interactive dropzone only when no file is selected */}
             <div
               className={dropzoneClass}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              onClick={!receipt.previewUrl && !receipt.uploading ? handleDropzoneClick : undefined}
-              role={!receipt.previewUrl && !receipt.uploading ? "button" : undefined}
-              tabIndex={!receipt.previewUrl && !receipt.uploading ? 0 : undefined}
-              onKeyDown={!receipt.previewUrl && !receipt.uploading ? handleDropzoneKey : undefined}
+              onClick={
+                !receipt.previewUrl && !receipt.uploading
+                  ? handleDropzoneClick
+                  : undefined
+              }
+              role={
+                !receipt.previewUrl && !receipt.uploading ? "button" : undefined
+              }
+              tabIndex={
+                !receipt.previewUrl && !receipt.uploading ? 0 : undefined
+              }
+              onKeyDown={
+                !receipt.previewUrl && !receipt.uploading
+                  ? handleDropzoneKey
+                  : undefined
+              }
               aria-label="Upload payment receipt"
             >
               <input
@@ -338,7 +406,11 @@ export default function Registration() {
 
               {receipt.uploading ? (
                 <div className="dropzone-content">
-                  <div className="upload-spinner" role="status" aria-label="Uploading receipt" />
+                  <div
+                    className="upload-spinner"
+                    role="status"
+                    aria-label="Uploading receipt"
+                  />
                   <span className="dropzone-label">Uploading...</span>
                 </div>
               ) : receipt.previewUrl ? (
@@ -349,11 +421,17 @@ export default function Registration() {
                     className="receipt-thumb"
                   />
                   <div className="receipt-preview-info">
-                    <span className="receipt-preview-name">{receipt.file?.name}</span>
+                    <span className="receipt-preview-name">
+                      {receipt.file?.name}
+                    </span>
                     {receipt.uploadedUrl ? (
-                      <span className="receipt-upload-ok">✓ Uploaded successfully</span>
+                      <span className="receipt-upload-ok">
+                        ✓ Uploaded successfully
+                      </span>
                     ) : (
-                      <span className="receipt-upload-error">Upload pending…</span>
+                      <span className="receipt-upload-error">
+                        Upload pending…
+                      </span>
                     )}
                     <button
                       type="button"
@@ -368,10 +446,18 @@ export default function Registration() {
                 </div>
               ) : (
                 <div className="dropzone-content">
-                  <UploadCloud size={32} strokeWidth={1.5} className="dropzone-icon" />
-                  <span className="dropzone-label">Drop your screenshot here</span>
+                  <UploadCloud
+                    size={32}
+                    strokeWidth={1.5}
+                    className="dropzone-icon"
+                  />
+                  <span className="dropzone-label">
+                    Drop your screenshot here
+                  </span>
                   <span className="dropzone-hint">or click to browse</span>
-                  <span className="dropzone-hint">PNG, JPG, WEBP — max 5 MB</span>
+                  <span className="dropzone-hint">
+                    PNG, JPG, WEBP — max 5 MB
+                  </span>
                 </div>
               )}
             </div>
@@ -386,11 +472,11 @@ export default function Registration() {
           {/* Optional transaction code */}
           <div className="form-group">
             <label htmlFor="transactionCode">
-              Transaction ID{" "}
-              <span className="field-optional">(optional)</span>
+              Transaction ID <span className="field-optional">(optional)</span>
             </label>
             <input
-              id="transactionCode" name="transactionCode"
+              id="transactionCode"
+              name="transactionCode"
               placeholder="e.g. ABC123XYZ"
               value={form.transactionCode}
               onChange={handleChange}
@@ -415,7 +501,8 @@ export default function Registration() {
           </button>
 
           <p className="registration-note">
-            Your registration will be reviewed by the organizers after payment is verified.
+            Your registration will be reviewed by the organizers after payment
+            is verified.
           </p>
         </form>
       </div>

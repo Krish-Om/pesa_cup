@@ -4,6 +4,7 @@
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.4fr);
   gap: 3rem;
   padding: 2rem 0 4rem;
+  width: 100%;
 }
 
 .registration-intro {
@@ -38,7 +39,11 @@
   padding: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(0, 61, 122, 0.55), rgba(0, 13, 26, 0.8));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 61, 122, 0.55),
+    rgba(0, 13, 26, 0.8)
+  );
 }
 
 .registration-form-heading {
@@ -125,7 +130,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
   background: rgba(0, 0, 0, 0.15);
   min-height: 120px;
 }
@@ -196,7 +203,9 @@
 }
 
 @keyframes reg-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Receipt preview ── */
@@ -317,12 +326,16 @@
 
 /* ── Success / Confirmation view ── */
 .success-view {
-  max-width: 44rem;
+  width: 100%;
   margin: 4rem auto 6rem;
   padding: 3rem 2.5rem;
   border: 1px solid var(--success, #22c55e);
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(0, 61, 122, 0.6), rgba(0, 13, 26, 0.85));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 61, 122, 0.6),
+    rgba(0, 13, 26, 0.85)
+  );
   text-align: center;
   animation: fadeInUp 0.4s ease both;
 }
@@ -356,8 +369,13 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.success-detail-row:first-child { padding-top: 0; }
-.success-detail-row:last-child  { border-bottom: none; padding-bottom: 0; }
+.success-detail-row:first-child {
+  padding-top: 0;
+}
+.success-detail-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
 
 .success-detail-label {
   font-size: 0.75rem;
@@ -398,8 +416,13 @@
 }
 
 @keyframes badge-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
 }
 
 .success-message-text {
@@ -418,10 +441,15 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .registration-layout {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .registration-layout {
     padding-bottom: 2rem;
   }
 
@@ -476,7 +504,10 @@
   }
 
   .success-detail-value {
+    font-size: 0.95rem;
+    color: var(--white);
     text-align: left;
+    word-break: break-word;
   }
 
   .success-actions {

@@ -1,7 +1,8 @@
 /* ── Layout shell ─────────────────────────────────────────────────── */
 .admin-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: var(--primary-dark);
 }
 
@@ -17,9 +18,8 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1rem;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .admin-sidebar-brand {
@@ -95,6 +95,8 @@
 
 .admin-content {
   flex: 1;
+  height: 100%;
+  overflow-y: auto;
   padding: 2rem 2.5rem;
   min-width: 0;
 }
@@ -286,6 +288,12 @@
   gap: 1rem;
 }
 
+.admin-form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
 .admin-form-group {
   display: flex;
   flex-direction: column;
@@ -339,6 +347,12 @@
   color: var(--accent-gold);
 }
 
+textarea.admin-form-input {
+  resize: vertical;
+  min-height: 4.5rem;
+  font-family: inherit;
+}
+
 .admin-form-score-row {
   display: flex;
   align-items: center;
@@ -358,6 +372,10 @@
 
 @media (max-width: 560px) {
   .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-row-3 {
     grid-template-columns: 1fr;
   }
 }
@@ -576,6 +594,9 @@
 .admin-modal {
   width: 100%;
   max-width: 440px;
+  max-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(
     135deg,
     rgba(0, 61, 122, 0.95) 0%,
@@ -592,6 +613,7 @@
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
 }
 
 .admin-modal-header h2 {
@@ -620,6 +642,9 @@
 
 .admin-modal-body {
   padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .admin-modal-text {
@@ -681,17 +706,21 @@
 @media (max-width: 900px) {
   .admin-shell {
     flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
 
   .admin-sidebar {
     width: 100%;
     height: auto;
+    max-height: none;
     position: static;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
+    overflow-y: visible;
   }
 
   .admin-sidebar-brand {
@@ -707,6 +736,8 @@
   }
 
   .admin-content {
+    height: auto;
+    overflow: visible;
     padding: 1.5rem;
   }
 }

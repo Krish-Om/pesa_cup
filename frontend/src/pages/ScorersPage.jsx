@@ -1,24 +1,17 @@
-
 import TopScorersList from "../components/TopScorersList";
+import "./Pages.css";
 
 export default function ScorersPage() {
   return (
-    <>
-      <div className="page-banner">
-        <h1>Top Scorers</h1>
-        <p>Leading goal scorers of the tournament</p>
+    <main className="page-content">
+      <div className="page-header">
+        <div className="container">
+          <h1>Golden Boot Race</h1>
+          <p>Rankings based on goals scored. Assists used as tiebreaker.</p>
+        </div>
       </div>
 
-      <section className="section">
-        <div className="container">
-          <h2 className="section-title">Golden Boot Race</h2>
-          <span className="section-line" />
-          <p className="section-sub">
-            Rankings based on goals scored. Assists used as tiebreaker.
-          </p>
-          <TopScorersList />
-        </div>
-      </section>
-    </>
+      <TopScorersList />
+    </main>
   );
 }

@@ -11,11 +11,11 @@ export default function Contact() {
 
   const [submitted, setSubmitted] = useState(false);
 
-    const handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -27,11 +27,14 @@ export default function Contact() {
       setSubmitted(false);
     }, 3000);
   };
+
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>Contact Us</h1>
-        <p>Get in touch with the tournament organizers.</p>
+        <div className="container">
+          <h1>Contact Us</h1>
+          <p>Get in touch with the tournament organizers.</p>
+        </div>
       </div>
 
       <div className="container">
@@ -39,18 +42,18 @@ export default function Contact() {
           <div className="contact-info">
             <h3>Get in Touch</h3>
             <div className="info-item">
-              <strong>Email: </strong>
+              <strong>Email:</strong>
               <p>uniqueshilpakar17@gmail.com</p>
             </div>
             <div className="info-item">
-              <strong>Phone: </strong>
-              <p>977-9761626772</p>
+              <strong>Phone:</strong>
+              <p>+977 9761626772</p>
             </div>
             <div className="info-item">
-              <strong>Address: </strong>
+              <strong>Address:</strong>
               <p>
-                Prabhat English Secondary School <br /> Byasi-2, Bhaktapur,
-                Nepal
+                Prabhat English Secondary School <br />
+                Byasi-2, Bhaktapur, Nepal
               </p>
             </div>
             <div className="info-item">
@@ -65,16 +68,16 @@ export default function Contact() {
 
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input 
-                type="text" 
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
                 placeholder="Your Name"
-                />
+              />
             </div>
 
             <div className="form-group">

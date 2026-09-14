@@ -9,8 +9,8 @@
   content: "";
   position: absolute;
   top: 0;
-  right: -50%;
-  width: 200%;
+  right: 0;
+  width: 100%;
   height: 100%;
   background: radial-gradient(
     circle at 80% 50%,
@@ -18,13 +18,6 @@
     transparent 50%
   );
   pointer-events: none;
-}
-
-/* Constrain and center layout content across high-res monitors */
-.fixtures .container {
-  max-width: 1280px;
-  width: 90%;
-  margin: 0 auto;
 }
 
 .fixtures-subtitle {

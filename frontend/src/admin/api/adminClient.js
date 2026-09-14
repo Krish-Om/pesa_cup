@@ -22,7 +22,11 @@ export async function adminFetch(path, { method = "GET", body, headers } = {}) {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...headers,
     },
-    body: isFormData ? body : body !== undefined ? JSON.stringify(body) : undefined,
+    body: isFormData
+      ? body
+      : body !== undefined
+        ? JSON.stringify(body)
+        : undefined,
   });
 
   if (response.status === 401) {
@@ -36,7 +40,15 @@ export async function adminFetch(path, { method = "GET", body, headers } = {}) {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(data?.message || `Request failed (${response.status})`);
+    const detail =
+      Array.isArray(data?.errors) && data.errors.length > 0
+        ? data.errors
+            .map((e) => (e.field ? `${e.field}: ${e.message}` : e.message || e))
+            .join("; ")
+        : null;
+    throw new Error(
+      detail || data?.message || `Request failed (${response.status})`,
+    );
   }
 
   return data;
@@ -48,9 +60,12 @@ export async function adminFetch(path, { method = "GET", body, headers } = {}) {
  */
 export async function fetchProtectedFileUrl(path) {
   const key = getAdminKey();
-  const response = await fetch(`${API_BASE_URL.replace(/\/api\/v1$/, "")}${path}`, {
-    headers: { Authorization: `Bearer ${key}` },
-  });
+  const response = await fetch(
+    `${API_BASE_URL.replace(/\/api\/v1$/, "")}${path}`,
+    {
+      headers: { Authorization: `Bearer ${key}` },
+    },
+  );
   if (response.status === 401) {
     throw new AdminAuthError("Admin session expired or invalid.");
   }

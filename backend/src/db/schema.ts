@@ -19,6 +19,14 @@ export const tournaments = sqliteTable(
       .default("UPCOMING"),
     venue: text("venue"),
     organizer: text("organizer"),
+    entryFee: integer("entry_fee"),
+    registrationDeadline: text("registration_deadline"),
+    description: text("description"),
+    rules: text("rules"),
+    firstPrize: text("first_prize"),
+    secondPrize: text("second_prize"),
+    thirdPrize: text("third_prize"),
+    bannerUrl: text("banner_url"),
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
@@ -39,37 +47,33 @@ export const teams = sqliteTable("teams", {
     .$defaultFn(() => new Date()),
 });
 
-export const registrations = sqliteTable(
-  "registrations",
-  {
-    id: integer().primaryKey({ autoIncrement: true }).notNull(),
-    tournamentId: integer("tournament_id")
-      .notNull()
-      .references(() => tournaments.id, { onDelete: "cascade" }),
-    teamName: text("team_name").notNull(),
-    captainName: text("captain_name").notNull(),
-    captainEmail: text("captain_email").notNull(),
-    captainPhone: text("captain_phone").notNull(),
-    playerCount: integer("player_count").notNull(),
-    batchYear: text("batch_year").notNull(), // e.g., "2020" or "Batch 2078"
+export const registrations = sqliteTable("registrations", {
+  id: integer().primaryKey({ autoIncrement: true }).notNull(),
+  tournamentId: integer("tournament_id")
+    .notNull()
+    .references(() => tournaments.id, { onDelete: "cascade" }),
+  teamName: text("team_name").notNull(),
+  captainName: text("captain_name").notNull(),
+  captainEmail: text("captain_email").notNull(),
+  captainPhone: text("captain_phone").notNull(),
+  playerCount: integer("player_count").notNull(),
+  batchYear: text("batch_year").notNull(), // e.g., "2020" or "Batch 2078"
 
-    // Payment Details
-    transactionCode: text("transaction_code"),
-    paymentReceiptUrl: text("payment_receipt_url").notNull(),
+  // Payment Details
+  transactionCode: text("transaction_code"),
+  paymentReceiptUrl: text("payment_receipt_url").notNull(),
 
-    status: text("status", { enum: ["PENDING", "APPROVED", "REJECTED"] })
-      .default("PENDING")
-      .notNull(),
-    rejectionReason: text("rejection_reason"),
-    teamId: integer("team_id").references(() => teams.id, {
-      onDelete: "set null",
-    }),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .$defaultFn(() => new Date()),
-  },
-
-);
+  status: text("status", { enum: ["PENDING", "APPROVED", "REJECTED"] })
+    .default("PENDING")
+    .notNull(),
+  rejectionReason: text("rejection_reason"),
+  teamId: integer("team_id").references(() => teams.id, {
+    onDelete: "set null",
+  }),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
 
 export const fixtures = sqliteTable("fixtures", {
   id: integer("id").primaryKey({ autoIncrement: true }),
