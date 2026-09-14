@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
-          file: ./frontend/Containerfile.frontend
+          file: ./frontend/Containerfile
           build-args: |
             VITE_API_URL=/api
           push: true
