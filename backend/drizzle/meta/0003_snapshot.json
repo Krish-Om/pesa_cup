@@ -145,12 +145,8 @@
           "name": "fixtures_home_team_id_teams_id_fk",
           "tableFrom": "fixtures",
           "tableTo": "teams",
-          "columnsFrom": [
-            "home_team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["home_team_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -158,12 +154,8 @@
           "name": "fixtures_away_team_id_teams_id_fk",
           "tableFrom": "fixtures",
           "tableTo": "teams",
-          "columnsFrom": [
-            "away_team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["away_team_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -171,12 +163,8 @@
           "name": "fixtures_tournament_id_tournaments_id_fk",
           "tableFrom": "fixtures",
           "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tournament_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -371,12 +359,8 @@
           "name": "gallery_photos_category_id_gallery_categories_id_fk",
           "tableFrom": "gallery_photos",
           "tableTo": "gallery_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -494,12 +478,8 @@
           "name": "registrations_tournament_id_tournaments_id_fk",
           "tableFrom": "registrations",
           "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tournament_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -507,12 +487,8 @@
           "name": "registrations_team_id_teams_id_fk",
           "tableFrom": "registrations",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -597,12 +573,8 @@
           "name": "scorers_team_id_teams_id_fk",
           "tableFrom": "scorers",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -610,12 +582,8 @@
           "name": "scorers_tournament_id_tournaments_id_fk",
           "tableFrom": "scorers",
           "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tournament_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -741,12 +709,8 @@
           "name": "standings_team_id_teams_id_fk",
           "tableFrom": "standings",
           "tableTo": "teams",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -754,12 +718,8 @@
           "name": "standings_tournament_id_tournaments_id_fk",
           "tableFrom": "standings",
           "tableTo": "tournaments",
-          "columnsFrom": [
-            "tournament_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tournament_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -961,9 +921,7 @@
       "indexes": {
         "tournaments_slug_unique": {
           "name": "tournaments_slug_unique",
-          "columns": [
-            "slug"
-          ],
+          "columns": ["slug"],
           "isUnique": true
         }
       },

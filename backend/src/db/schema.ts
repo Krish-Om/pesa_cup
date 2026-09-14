@@ -57,7 +57,7 @@ export const registrations = sqliteTable("registrations", {
   captainEmail: text("captain_email").notNull(),
   captainPhone: text("captain_phone").notNull(),
   playerCount: integer("player_count").notNull(),
-  batchYear: text("batch_year").notNull(), // e.g., "2020" or "Batch 2078"
+  batchYear: text("batch_year").notNull(),
 
   // Payment Details
   transactionCode: text("transaction_code"),
@@ -115,8 +115,8 @@ export const standings = sqliteTable("standings", {
   points: integer("points").notNull().default(0),
   position: integer("position"),
   createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
 });
 
 export const scorers = sqliteTable("scorers", {
@@ -134,7 +134,7 @@ export const scorers = sqliteTable("scorers", {
   avatar: text("avatar"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const galleryCategories = sqliteTable("gallery_categories", {
