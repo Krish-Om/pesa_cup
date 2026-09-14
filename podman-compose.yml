@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Containerfile
+    container_name: pesa-cup-backend
+    restart: always
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - pesa_db_data:/app/db
+    env_file:
+      - ./backend/.env
+    networks:
+      - pesa-network
+
+  # Dynamic Frontend Server (SSR/Node/Bun)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Containerfile.frontend
+      args:
+        VITE_API_URL: "http://localhost:3000/api/v1"
+    container_name: pesa-cup-frontend
+    restart: always
+    ports:
+      - "127.0.0.1:5173:5173"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - pesa-network
+
+networks:
+  pesa-network:
+    driver: bridge
+
+volumes:
+  pesa_db_data:
+    driver: local

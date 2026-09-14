@@ -24,7 +24,7 @@
 
 - [ ] Migrate receipt storage to a private S3 bucket and serve via pre-signed URLs with a short TTL.
 - [ ] Migrate gallery storage to a public S3 bucket and update `mediaUrl` to the CDN URL.
-- [ ] Add MinIO service to `compose.yml` for local S3-compatible development (see root `README.md` TODO).
+- [ ] Add MinIO service to `../../podman-compose.yml` for local S3-compatible development (see root `README.md` TODO).
 - [ ] Add receipt file cleanup on registration rejection to avoid orphaned files.
 - [ ] Add file-type validation using magic-byte inspection (not just MIME type from the client).
 
