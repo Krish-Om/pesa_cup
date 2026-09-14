@@ -1,17 +1,19 @@
-
-import { Phone, Mail, MapPin,  } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "../css/Footer.css";
 
+export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-export default function  Footer() {
   return (
-    <div className="footer">
+    <footer className="footer">
       <div className="footer-content">
         <div className="container">
           <div className="footer-grid">
-            {/* //about section  */}
-            
+            {/* About section */}
             <div className="footer-section">
               <h3 className="footer-title">PESA</h3>
               <p className="footer-text">
@@ -19,17 +21,19 @@ export default function  Footer() {
                 Batch.
               </p>
               <div className="footer-social">
-                <a href="https://www.facebook.com/groups/139214785116" className="social-link" aria-label="Facebook">
+                <a
+                  href="https://www.facebook.com/groups/139214785116"
+                  className="social-link"
+                  aria-label="Facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FaFacebook size={20} />
                 </a>
-             
-                {/* <a href="#" className="social-link" aria-label="Instagram">
-                  <Instagram size={20} />
-                </a> */}
               </div>
             </div>
-            {/* //contact section
-            //------------------------------------------------- */}
+
+            {/* Contact section */}
             <div className="footer-section">
               <h3 className="footer-title">Contact</h3>
               <ul className="footer-links">
@@ -51,57 +55,57 @@ export default function  Footer() {
                 </li>
               </ul>
             </div>
-            {/* //quick links 
-            //-------------------------------------------- */}
+
+            {/* Quick Links */}
             <div className="footer-section">
               <h3 className="footer-title">Quick Links</h3>
-              <ul className="footer-links">
+              <ul className="footer-links footer-links-grid">
                 <li>
-                  <a href="#home">Home</a>
+                  <Link to="/" onClick={scrollToTop}>
+                    Home
+                  </Link>
                 </li>
                 <li>
-                  <a href="#features">Features</a>
+                  <Link to="/fixtures">Fixtures</Link>
                 </li>
                 <li>
-                  <a href="#standings">Standings</a>
+                  <Link to="/standings">Standings</Link>
                 </li>
                 <li>
-                  <a href="#sponsors">Sponsors</a>
+                  <Link to="/gallery">Gallery</Link>
+                </li>
+                <li>
+                  <Link to="/sponsors">Sponsors</Link>
+                </li>
+                <li>
+                  <Link to="/register">Register</Link>
                 </li>
               </ul>
             </div>
-            {/* //info section 
-            //-------------------------------------------- */}
+
+            {/* Social Media Links */}
             <div className="footer-section">
               <h3 className="footer-title">Social Media Links</h3>
               <p className="footer-text">
                 Follow us on social media for live updates and tournament news.
               </p>
               <div className="footer-social-links">
-                <a href="https://www.facebook.com/groups/139214785116" className="social-badge">
+                <a
+                  href="https://www.facebook.com/groups/139214785116"
+                  className="social-badge"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Facebook
                 </a>
                 <a href="#" className="social-badge">
                   Messenger
                 </a>
-                {/* <a href="#" className="social-badge">
-                  Instagram
-                </a> */}
               </div>
             </div>
           </div>
 
-          <div className="social-icons">
-  <a
-    href="https://www.facebook.com/groups/139214785116"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Facebook"
-  >
-    <FaFacebook size={22} />
-  </a>
-</div>
-          {/* //footer bottom //--------------------------------------------- */}
+          {/* Footer Bottom */}
           <div className="footer-bottom">
             <p className="copyright">
               &copy; 2026 Prabhat English Secondary School. All rights reserved.
@@ -109,11 +113,11 @@ export default function  Footer() {
             <div className="footer-links-bottom">
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
-              <a href="#">Contact Us</a>
+              <Link to="/contact">Contact Us</Link>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

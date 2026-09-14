@@ -10,8 +10,11 @@ http:
     type: json
     data: |-
       {
-        "playerName":"Hambadullah",
-      "teamName":"Islam"
+        "playerName": "Hambadullah",
+        "teamId": 3,
+        "tournamentId": 1,
+        "goals": 0,
+        "assists": 0
       }
   auth: inherit
 

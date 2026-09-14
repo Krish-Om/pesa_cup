@@ -1,13 +1,18 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
+import ScrollMemory from "./components/ScrollMemory";
 
 import Fixtures from "./components/Fixtures";
 import Gallery from "./components/Gallery";
+import Sponsors from "./components/Sponsors";
 import StandingsSection from "./components/Standings";
 import Contact from "./pages/Contact";
 import GalleryPages from "./pages/GalleryPages";
 import Home from "./pages/Home";
 import Registration from "./pages/Registration";
+import TournamentDetail from "./pages/TournamentDetail"; // 👈 Added
+import Tournaments from "./pages/Tournaments"; // 👈 Added
 
 // Admin part
 import AdminLayout from "./admin/components/AdminLayout";
@@ -23,28 +28,37 @@ import ScorersAdmin from "./admin/pages/ScorersAdmin";
 import StandingsAdmin from "./admin/pages/StandingsAdmin";
 import TournamentsAdmin from "./admin/pages/TournamentsAdmin";
 
-// Renders the public Header on every route except /admin/*
 function PublicHeader() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
   return isAdminRoute ? null : <Header />;
 }
 
+function HomeFooter() {
+  const location = useLocation();
+  return location.pathname === "/" ? <Footer /> : null;
+}
+
 export default function App() {
   return (
     <AdminAuthProvider>
       <BrowserRouter>
+        <ScrollMemory />
         <PublicHeader />
         <Routes>
           {/* ── Public site ── */}
           <Route path="/" element={<Home />} />
+          <Route path="/tournaments" element={<Tournaments />} />{" "}
+          {/* 👈 Added */}
+          <Route path="/tournaments/:id" element={<TournamentDetail />} />{" "}
+          {/* 👈 Added */}
           <Route path="/fixtures" element={<Fixtures />} />
           <Route path="/standings" element={<StandingsSection />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/gallery/:categoryId" element={<GalleryPages />} />
+          <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/register" element={<Registration />} />
-
           {/* ── Admin ── */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
@@ -65,6 +79,7 @@ export default function App() {
             <Route path="contacts" element={<ContactsAdmin />} />
           </Route>
         </Routes>
+        <HomeFooter />
       </BrowserRouter>
     </AdminAuthProvider>
   );

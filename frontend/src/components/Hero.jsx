@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import "../css/Hero.css";
 import banner from "../assets/banner.png";
+import "../css/Hero.css";
 
 export default function Hero() {
   return (
@@ -16,24 +16,25 @@ export default function Hero() {
           Organized by PESA (Prabhat Ex-Students Association)
         </p>
         <p className="hero-description">
-          Welcome to Prabhat English Secondary School Futsal Tournament.<br/>
+          Welcome to Prabhat English Secondary School Futsal Tournament.
+          <br />
           Catch live scores and tournament updates!
           <br />
           <br />
           Organized by 2076 Batch.
         </p>
 
-       <div className="hero-buttons">
-  <Link to="/fixtures" className="btn btn-primary">
-    VIEW FIXTURES
-  </Link>
-  <Link to="/standings" className="btn btn-secondary">
-    VIEW STANDINGS
-  </Link>
-  <Link to="/register" className="btn btn-secondary">
-    REGISTER TEAM
-  </Link>
-</div>
+        <div className="hero-buttons">
+          <Link to="/fixtures" className="btn btn-primary">
+            VIEW FIXTURES
+          </Link>
+          <Link to="/standings" className="btn btn-secondary">
+            VIEW STANDINGS
+          </Link>
+          <Link to="/register" className="btn btn-secondary">
+            REGISTER TEAM
+          </Link>
+        </div>
       </div>
     </section>
   );

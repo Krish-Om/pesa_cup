@@ -5,10 +5,10 @@ info:
 
 http:
   method: PATCH
-  url: "{{server_url}}/scorers/4"
+  url: "{{server_url}}/scorers/3"
   body:
     type: json
-    data: |-
+    data: |
       {
         "tournamentId":1
       }

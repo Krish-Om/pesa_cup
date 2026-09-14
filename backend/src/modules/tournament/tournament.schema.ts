@@ -18,6 +18,17 @@ export const insertTournamentSchema = createInsertSchema(tournaments, {
   status: z.enum(["UPCOMING", "ONGOING", "COMPLETED"]).default("UPCOMING"),
   venue: z.string().nullable().optional(),
   organizer: z.string().nullable().optional(),
+  entryFee: z.preprocess(
+    (val) => (val === "" || val === undefined ? null : val),
+    z.coerce.number().int().nonnegative().nullable().optional(),
+  ),
+  registrationDeadline: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  rules: z.string().nullable().optional(),
+  firstPrize: z.string().nullable().optional(),
+  secondPrize: z.string().nullable().optional(),
+  thirdPrize: z.string().nullable().optional(),
+  bannerUrl: z.string().nullable().optional(),
 });
 
 export const selectTournamentSchema = createSelectSchema(tournaments);

@@ -1,15 +1,17 @@
-//import React from 'react';
-import Standings from '../components/Standings';
-import './Pages.css';
+import Standings from "../components/Standings";
+import "./Pages.css";
 
 export default function StandingsPage() {
   return (
-    <div className="page-content">
+    <main className="page-content">
       <div className="page-header">
-        <h1>Tournament Standings</h1>
-        <p>Check the current standings for each group</p>
+        <div className="container">
+          <h1>Tournament Standings</h1>
+          <p>Current group standings and team points overview.</p>
+        </div>
       </div>
+
       <Standings />
-    </div>
+    </main>
   );
 }
