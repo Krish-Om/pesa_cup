@@ -1,4 +1,4 @@
-name: Build, Publish, and Deploy to Server
+name: Build and Publish Images to GHCR
 
 on:
   push:
@@ -59,25 +59,3 @@ jobs:
             ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  deploy:
-    needs: build-and-publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Connect to Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          oauth-client-id: "" # Optional if using authkey
-          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
-
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 100.74.197.34 # Your server's Tailscale IP
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            cd /opt/pesa_cup || exit 1
-            echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin
-            podman compose pull
-            podman compose up -d
-            podman image prune -f
