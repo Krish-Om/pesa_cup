@@ -201,6 +201,24 @@
   animation: fadeInUp 0.5s ease;
 }
 
+.error-message {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  animation: fadeInUp 0.5s ease;
+}
+
+.contact-form .btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* Responsive Overrides */
 @media (max-width: 768px) {
   .page-header {

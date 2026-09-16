@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { submitContact } from "../data/apis/api.contacts";
 import "./Pages.css";
 
 export default function Contact() {
@@ -9,7 +10,9 @@ export default function Contact() {
     message: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,13 +22,20 @@ export default function Contact() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
+    setError("");
+    setSubmitting(true);
+    try {
+      await submitContact(formData);
+      setSubmitted(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
-      setSubmitted(false);
-    }, 3000);
+      setTimeout(() => setSubmitted(false), 3000);
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -119,9 +129,15 @@ export default function Contact() {
               ></textarea>
             </div>
 
-            <button type="submit" className="btn btn-primary">
-              Send Message
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={submitting}
+            >
+              {submitting ? "Sending..." : "Send Message"}
             </button>
+
+            {error && <div className="error-message">{error}</div>}
 
             {submitted && (
               <div className="success-message">
