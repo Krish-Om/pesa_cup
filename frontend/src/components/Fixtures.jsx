@@ -107,15 +107,15 @@ export default function Fixtures() {
         const payload = JSON.parse(event.data);
 
         if (payload.type === "SCORE_UPDATE" && payload.data) {
-          const { fixtureId, homescore, awayscore, status } = payload.data;
+          const { fixtureId, homeScore, awayScore, status } = payload.data;
 
           setFixturesData((prevFixtures) =>
             prevFixtures.map((match) => {
               if (match.id === fixtureId || match._id === fixtureId) {
                 return {
                   ...match,
-                  scoreA: homescore,
-                  scoreB: awayscore,
+                  scoreA: homeScore,
+                  scoreB: awayScore,
                   status: status ? status.toLowerCase() : match.status,
                 };
               }
