@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pesa-backend
+  name: pesa-backend
+spec:
+  selector:
+    matchLabels:
+      app: pesa-backend
+  template:
+    metadata:
+      labels:
+        app: pesa-backend
+    spec:
+      containers:
+        - image: ghcr.io/krish-om/pesa_cup/backend:98520cd15a6e109e30ce83e8d2931c18ca78e307
+          name: backend
+          envFrom:
+            - configMapRef:
+                name: pesa-backend-config
+            - secretRef:
+                name: pesa-backend-secrets
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          volumeMounts:
+            - mountPath: /data
+              name: pesa-backend-pvc
+            - mountPath: /uploads
+              name: pesa-upload-pvc
+      volumes:
+        - name: pesa-backend-pvc
+          persistentVolumeClaim:
+            claimName: pesa-backend-pvc
+        - name: pesa-upload-pvc
+          persistentVolumeClaim:
+            claimName: pesa-upload-pvc
