@@ -1,13 +1,12 @@
-import API_BASE_URL from "./config";
+import {API_BASE_URL,VITE_ADMIN_API_KEY} from "./config";
 
 const getAuthHeaders = () => {
   // Use your admin API key string here
-  const adminKey =
-    import.meta.env.VITE_ADMIN_API_KEY ||
-    "32c018bfabd17dcfa08bc1f12f9e4bcfd48a998bcaca1debafa267b591cf94fdbe2a231015317295b37688f74e72ea84750579ab857efb0425d119c62325cd45";
-
+  if(VITE_ADMIN_API_KEY === null){
+    throw new Error("Admin key is required");
+  }
   return {
-    Authorization: `Bearer ${adminKey}`,
+    Authorization: `Bearer ${VITE_ADMIN_API_KEY}`,
   };
 };
 

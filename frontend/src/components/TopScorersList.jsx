@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import "../css/TopScorersList.css";
 import { ScorersAPI } from "../data/apis/api.scorers";
 import { TournamentsAPI } from "../data/apis/api.tournaments";
-import API_BASE_URL from "../data/apis/config";
+import {API_BASE_URL} from "../data/apis/config";
 
 const UPLOADS_ORIGIN = API_BASE_URL.replace(/\/api\/v1$/, "");
 const resolveAvatarSrc = (avatar) => {

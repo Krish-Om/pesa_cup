@@ -1,4 +1,4 @@
-import API_BASE_URL  from "./config";
+import {API_BASE_URL}  from "./config";
 
 const standingsEndpoint = `${API_BASE_URL}/standings`;
 const getAllStandings = async () => {
