@@ -8,8 +8,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: ghcr.io/aayushduwal/pesa_cup/backend
-  FRONTEND_IMAGE: ghcr.io/aayushduwal/pesa_cup/frontend
+  BACKEND_IMAGE: ghcr.io/krish-om/pesa_cup/backend
+  FRONTEND_IMAGE: ghcr.io/krish-om/pesa_cup/frontend
 
 jobs:
   build-and-publish:

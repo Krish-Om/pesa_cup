@@ -1,4 +1,4 @@
-import API_BASE_URL from "../../data/apis/config";
+import {API_BASE_URL} from "../../data/apis/config";
 
 const STORAGE_KEY = "pesa_admin_key";
 

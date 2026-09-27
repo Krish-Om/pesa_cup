@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pesa-backend-config
+data:
+  PORT: "8080"
+  ALLOWED_ORIGINS: https://pesa.hridaya.dev
+  ESEWA_ENV: sandbox
+  ESEWA_PRODUCT_CODE: EPAYTEST
+  ESEWA_PAYMENT_URL: https://rc-epay.esewa.com.np/api/epay/main/v2/form
+  ESEWA_STATUS_CHECK_URL: https://rc.esewa.com.np/api/epay/transaction/status/
+  ESEWA_REGISTRATION_AMOUNT: "2500"
+  ESEWA_SUCCESS_URL: http://pesa-frontend.svc.cluster.local/payment/success
+  ESEWA_FAILURE_URL: http://pesa-frontend.svc.cluster.local/payment/failure

@@ -7,7 +7,8 @@ import {
   uploadPaymentReceipt,
 } from "../data/apis/api.registrations";
 import "./Pages.css";
-
+import esewaQrImg from '/qr/lakvVthD.jpg';
+import fonePayQrImg from '/qr/fDQnpLI8.jpg';
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -350,14 +351,23 @@ export default function Registration() {
             </p>
             <div className="qr-grid">
               <div className="qr-card">
-                <div className="qr-placeholder">
-                  <span>eSewa QR</span>
+                <div className="qr-container">
+                  <img
+                      src={esewaQrImg}
+                      alt="eSewa QR Code"
+                      className="qr-image"
+                  />
                 </div>
                 <span className="qr-label">eSewa</span>
               </div>
+
               <div className="qr-card">
-                <div className="qr-placeholder">
-                  <span>Fonepay QR</span>
+                <div className="qr-container">
+                  <img
+                      src={fonePayQrImg}
+                      alt="Fonepay QR Code"
+                      className="qr-image"
+                  />
                 </div>
                 <span className="qr-label">Fonepay</span>
               </div>

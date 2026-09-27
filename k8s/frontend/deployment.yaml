@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pesa-frontend
+  name: pesa-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pesa-frontend
+  template:
+    metadata:
+      labels:
+        app: pesa-frontend
+    spec:
+      containers:
+        - image: ghcr.io/krish-om/pesa_cup/frontend:296ecc00de1e680456eb4d2327f810bdef5a0c71
+          name: frontend

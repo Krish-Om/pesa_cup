@@ -1,4 +1,4 @@
-import API_BASE_URL from "./config";
+import {API_BASE_URL} from "./config";
 
 const tournamentsEndpoint = `${API_BASE_URL}/tournaments`;
 
