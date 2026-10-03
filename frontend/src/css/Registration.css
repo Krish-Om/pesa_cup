@@ -64,6 +64,101 @@
   grid-column: 1 / -1;
 }
 
+/* ── QR section ── */
+.qr-section {
+  width: 100%;
+  max-width: 640px;
+  margin: 1.5rem auto;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.qr-instruction {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+/* Flex / Grid Layout for QR Cards */
+.qr-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+/* Individual QR Card */
+.qr-card {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing container */
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.qr-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* White background wrapper for QR readability */
+.qr-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Constrain Image Size */
+.qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Labels below QR codes */
+.qr-label {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f8fafc;
+  letter-spacing: 0.025em;
+}
+
+/* Responsive breakpoint for mobile screens */
+@media (max-width: 520px) {
+  .qr-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .qr-card {
+    width: 100%;
+    max-width: 240px;
+  }
+}
+
 /* ── Dropzone ── */
 .dropzone {
   position: relative;
@@ -456,96 +551,5 @@
 
   .success-actions {
     flex-direction: column;
-  }
-  /* Container & Description */
-  .qr-section {
-    width: 100%;
-    max-width: 640px;
-    margin: 1.5rem auto;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    text-align: center;
-  }
-
-  .qr-instruction {
-    font-size: 0.9rem;
-    color: #cbd5e1;
-    margin-bottom: 1.25rem;
-    line-height: 1.5;
-  }
-
-  /* Flex / Grid Layout for QR Cards */
-  .qr-grid {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: stretch;
-    gap: 1.5rem;
-  }
-
-  /* Individual QR Card */
-  .qr-card {
-    flex: 1;
-    min-width: 0; /* Prevents flex items from overflowing container */
-    max-width: 220px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 1rem;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .qr-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(59, 130, 246, 0.4);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  /* White background wrapper for QR readability */
-  .qr-image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  /* Constrain Image Size */
-  .qr-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-
-  /* Labels below QR codes */
-  .qr-label {
-    margin-top: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #f8fafc;
-    letter-spacing: 0.025em;
-  }
-
-  /* Responsive breakpoint for mobile screens */
-  @media (max-width: 520px) {
-    .qr-grid {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .qr-card {
-      width: 100%;
-      max-width: 240px;
-    }
   }
 }
